@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\dll\PUBLIC-Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>..\..\dll\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="HOOKS-Assembly-CSharp">
+      <HintPath>..\..\dll\HOOKS-Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\dll\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\dll\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

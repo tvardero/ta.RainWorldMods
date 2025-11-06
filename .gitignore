@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# RainWorld and Unity DLL files
+dll/
