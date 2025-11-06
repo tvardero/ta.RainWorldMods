@@ -22,13 +22,10 @@ Steps:
 
 Requires that you have copied all `.dll` files from RainWorld installation folder to `dll/` folder in repository. See [build](#build) section for details.
 
+Prerequsites:
+- Git Bash installed
+- Make installed and available from Git Bash
+
 Steps:
-1. Run `dotnet ./src/ta.FirstMod/ publish --output dist/ta.FirstMod/src` for ta.FirstMod. Other mods are similar.
-2. Create `dist/ta.FirstMod` folder
-3. From `dist/ta.FirstMod/src` folder copy following files to `dist/ta.FirstMod`:
-   - `modinfo.json` -> `modinfo.json`
-   - `thumbnail.png` -> `thumbnail.png`
-   - `workshopdata.json` -> `workshopdata.json` (only required for Steam workshop publishing)
-   - `ta.FirstMod.dll` -> `plugin/ta.FirstMod.dll`
-   - `ta.FirstMod.pdb` -> `plugin/ta.FirstMod.pdb`
-4. Zip `dist/ta.FirstMod` folder - this is your mod zip file.
+1. Run `make publish-first-mod`
+2. Mod is at `/dist/ta.FirstMod`
