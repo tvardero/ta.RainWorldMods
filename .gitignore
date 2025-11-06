@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 
 # RainWorld and Unity DLL files
 dll/
+
+# Publish output
+dist/
