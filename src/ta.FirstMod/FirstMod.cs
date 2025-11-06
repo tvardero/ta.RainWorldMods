@@ -10,10 +10,10 @@ using UnityEngine;
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
-namespace TemplateMod;
+namespace ta.FirstMod;
 
-[BepInPlugin("AuthorName.ModName", "Mod Name", "1.0.0")]
-public class TemplateMod : BaseUnityPlugin
+[BepInPlugin("ta.FirstMod", "ta.FirstMod", "1.0.0")]
+public class FirstMod : BaseUnityPlugin
 {
     private bool _initialized;
 
