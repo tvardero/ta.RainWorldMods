@@ -23,9 +23,10 @@ Steps:
 Requires that you have copied all `.dll` files from RainWorld installation folder to `dll/` folder in repository. See [build](#build) section for details.
 
 Prerequsites:
-- Git Bash installed
-- Make installed and available from Git Bash
+- "Git Bash" or any other terminal with Linux commands installed (f.e. WSL)
+- "Make" installed and available from Git Bash
 
 Steps:
-1. Run `make publish-first-mod`
-2. Mod is at `/dist/ta.FirstMod`
+1. Run Git Bash or any other terminal with Linux commands
+2. Run `make publish-first-mod`
+3. Mod is at `/dist/ta.FirstMod`
