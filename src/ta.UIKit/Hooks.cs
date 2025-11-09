@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Drawing;
 using BepInEx;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog;
+using ta.UIKit.Nodes;
 
 namespace ta.UIKit;
 
@@ -11,12 +13,6 @@ public class Hooks : BaseUnityPlugin
 {
     private bool _initialized;
     private ServiceLocator? _serviceLocator;
-
-    [UsedImplicitly]
-    public void OnEnable()
-    {
-        Initialize();
-    }
 
     [UsedImplicitly]
     public void OnDisable()
@@ -34,7 +30,8 @@ public class Hooks : BaseUnityPlugin
         _initialized = false;
     }
 
-    private void Initialize()
+    [UsedImplicitly]
+    public void OnEnable()
     {
         if (_initialized) return;
 
@@ -43,16 +40,34 @@ public class Hooks : BaseUnityPlugin
         try
         {
             _serviceLocator = ServiceLocator.Instance;
-            _serviceLocator.Logger.LogInformation("Service locator initialized at {Timestamp}", DateTimeOffset.Now);
-
             Logger.LogInfo("ta.UIKit initialized");
         }
         catch (Exception e)
         {
-            Logger.LogError($"Failed to initialize ta.UIKit: {e.Message}");
+            Logger.LogError($"Failed to initialize ta.UIKit: {e.Message} \n{e}");
             throw;
         }
 
+        try { Test(_serviceLocator.ServiceProvider); }
+        catch (Exception e)
+        {
+            _serviceLocator.Logger.LogError(e, "Failed to test ta.UIKit");
+        }
+
         _initialized = true;
+    }
+
+    private void Test(IServiceProvider serviceProvider)
+    {
+        var nodeFactory = serviceProvider.GetRequiredService<NodeFactory>();
+        var sceneManager = serviceProvider.GetRequiredService<SceneManager>();
+
+        var rect = new ColorRectangle();
+        rect.Color = Color.IndianRed;
+
+        var scene = nodeFactory.Create<SceneRootNode>();
+        scene.AddChild(rect);
+
+        sceneManager.SwitchScene(scene);
     }
 }

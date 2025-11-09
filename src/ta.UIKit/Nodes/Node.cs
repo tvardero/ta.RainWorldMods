@@ -331,10 +331,6 @@ public class Node : IDisposable
 
     protected virtual void OnDetachedFromScene(SceneRootNode scene) { }
 
-    protected virtual void OnSceneEnter() { }
-
-    protected virtual void OnSceneExit() { }
-
     protected virtual void OnDispose() { }
 
     protected virtual void OnDraw(TimeSpan deltaTime) { }
@@ -342,6 +338,10 @@ public class Node : IDisposable
     protected virtual void OnInitialize() { }
 
     protected virtual void OnInputEvent(InputEvent inputEvent) { }
+
+    protected virtual void OnSceneEnter() { }
+
+    protected virtual void OnSceneExit() { }
 
     protected virtual void OnUnhandledInputEvent(InputEvent inputEvent) { }
 
@@ -384,6 +384,22 @@ public class Node : IDisposable
 
         Node[] snapshot = GetChildrenSnapshot();
         foreach (Node child in snapshot) { child.PropagateDetachedFromScene(scene); }
+    }
+
+    internal void PropagateSceneEnter()
+    {
+        OnSceneEnter();
+
+        Node[] snapshot = GetChildrenSnapshot();
+        foreach (Node child in snapshot) { child.PropagateSceneEnter(); }
+    }
+
+    internal void PropagateSceneExit()
+    {
+        OnSceneExit();
+
+        Node[] snapshot = GetChildrenSnapshot();
+        foreach (Node child in snapshot) { child.PropagateSceneExit(); }
     }
 
     private bool ShouldProcessDraw()

@@ -8,6 +8,9 @@ where TNode : Node, new()
     /// <inheritdoc />
     public override TNode Create()
     {
-        return Activator.CreateInstance<TNode>();
+        var node = Activator.CreateInstance<TNode>();
+        node.Initialize();
+
+        return node;
     }
 }

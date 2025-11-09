@@ -9,13 +9,13 @@ publish-first-mod:
 	cp ./src/ta.FirstMod/thumbnail.png ./dist/ta.FirstMod/
 	rm -rf ./dist/src-ta.FirstMod/
 
-publish-ui-kit:
-	dotnet publish ./src/ta.UiKit/ --output dist/src-ta.UiKit
-	rm -rf ./dist/ta.UiKit/
-	mkdir -p ./dist/ta.UiKit/
-	mkdir -p ./dist/ta.UiKit/plugins/
-	cp -r ./dist/src-ta.UiKit/* ./dist/ta.UiKit/plugins/
-	cp ./src/ta.UiKit/modinfo.json ./dist/ta.UiKit/
-	cp ./src/ta.UiKit/workshopdata.json ./dist/ta.UiKit/
-	cp ./src/ta.UiKit/thumbnail.png ./dist/ta.UiKit/
-	rm -rf ./dist/src-ta.UiKit/
+publish-uikit:
+	dotnet publish ./src/ta.UIKit/ --output dist/src-ta.UIKit
+	rm -rf ./dist/ta.UIKit/
+	mkdir -p ./dist/ta.UIKit/
+	mkdir -p ./dist/ta.UIKit/plugins/
+	cp -r ./dist/src-ta.UIKit/* ./dist/ta.UIKit/plugins/
+	cp ./src/ta.UIKit/modinfo.json ./dist/ta.UIKit/
+	cp ./src/ta.UIKit/workshopdata.json ./dist/ta.UIKit/
+	cp ./src/ta.UIKit/thumbnail.png ./dist/ta.UIKit/
+	rm -rf ./dist/src-ta.UIKit/

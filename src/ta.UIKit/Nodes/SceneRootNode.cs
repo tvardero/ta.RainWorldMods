@@ -15,8 +15,6 @@ public sealed class SceneRootNode : Node
     // ReSharper disable once ContextualLoggerProblem
     public SceneRootNode(ILogger<SceneRootNode>? logger = null) : base(logger) { }
 
-    public FContainer FContainer { get; } = new();
-
     public void EnqueueInputEvent(object args)
     {
         InputEvent inputEvent = _inputEventPool.Get();

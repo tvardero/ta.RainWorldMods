@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ta.UIKit.InputEvents;
 using ta.UIKit.Nodes;

@@ -1,6 +1,6 @@
 ﻿{
-  "id": "ta.UiKit",
-  "name": "ta.UiKit",
+  "id": "ta.UIKit",
+  "name": "ta.UIKit",
   "version": "0.0.1",
   "authors": "tvardero",
   "description": "Dependency library for projects that want to add UI elements to Rain World.",

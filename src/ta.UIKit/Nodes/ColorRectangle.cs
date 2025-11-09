@@ -11,12 +11,23 @@ public class ColorRectangle : AreaNode
     /// <inheritdoc />
     public ColorRectangle(ILogger<ColorRectangle>? logger = null) : base(logger) { }
 
-    public Color Color { get; set; } = Color.DarkGray;
+    private Color _color = Color.DarkGray;
+
+    public Color Color
+    {
+        get => _color;
+
+        set
+        {
+            _color = value;
+            _sprite.color = value.ToUnityColor();
+        }
+    }
 
     /// <inheritdoc />
     protected override void OnAttachedToScene(SceneRootNode scene)
     {
-        scene.FContainer.AddChild(_sprite);
+        Futile.stage.AddChild(_sprite);
 
         base.OnAttachedToScene(scene);
     }
@@ -24,7 +35,7 @@ public class ColorRectangle : AreaNode
     /// <inheritdoc />
     protected override void OnDetachedFromScene(SceneRootNode scene)
     {
-        scene.FContainer.RemoveChild(_sprite);
+        Futile.stage.RemoveChild(_sprite);
 
         base.OnDetachedFromScene(scene);
     }
