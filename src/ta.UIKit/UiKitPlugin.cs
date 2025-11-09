@@ -9,7 +9,7 @@ using ta.UIKit.Nodes;
 namespace ta.UIKit;
 
 [BepInPlugin("ta.UIKit", "ta.UIKit", "0.0.1")]
-public class Hooks : BaseUnityPlugin
+public class UiKitPlugin : BaseUnityPlugin
 {
     private bool _initialized;
     private ServiceLocator? _serviceLocator;
@@ -48,22 +48,39 @@ public class Hooks : BaseUnityPlugin
             throw;
         }
 
-        try { Test(_serviceLocator.ServiceProvider); }
-        catch (Exception e)
-        {
-            _serviceLocator.Logger.LogError(e, "Failed to test ta.UIKit");
-        }
+        try { Test(); }
+        catch (Exception e) { Logger.LogError($"Failed to test ta.UIKit: {e.Message} \n{e}"); }
 
         _initialized = true;
+
+        On.RainWorld.OnModsInit += (orig, self) =>
+        {
+            orig(self);
+            Test();
+        };
     }
 
-    private void Test(IServiceProvider serviceProvider)
+    private static void Test()
     {
+        var fsprite = new FSprite("pixel");
+        fsprite.scaleX = 200;
+        fsprite.scaleY = 200;
+        fsprite.x = 200;
+        fsprite.y = 200;
+        fsprite.color = UnityEngine.Color.red;
+        fsprite.isVisible = true;
+        Futile.stage.AddChild(fsprite);
+        
+        var serviceProvider = ServiceLocator.Instance.ServiceProvider;
+        
         var nodeFactory = serviceProvider.GetRequiredService<NodeFactory>();
         var sceneManager = serviceProvider.GetRequiredService<SceneManager>();
 
-        var rect = new ColorRectangle();
+        var rect = nodeFactory.Create<ColorRectangle>();
         rect.Color = Color.IndianRed;
+        rect.Size = new Size(100, 100);
+        rect.LocalPosition = new Point(100, 100);
+        rect.ProcessDraw(TimeSpan.Zero);
 
         var scene = nodeFactory.Create<SceneRootNode>();
         scene.AddChild(rect);

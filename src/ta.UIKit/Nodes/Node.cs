@@ -41,7 +41,7 @@ public class Node : IDisposable
 
     public ProcessMode UpdateMode { get; set; } = ProcessMode.AsParent;
 
-    public bool IsVisible { get; private set; }
+    public bool IsVisible { get; private set; } = true;
 
     public bool IsPaused { get; private set; }
 

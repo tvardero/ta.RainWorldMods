@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
         services.TryAddTransient(typeof(NodePool<>));
         services.TryAddSingleton(typeof(NodeFactory<>), typeof(ServiceProviderNodeFactory<>));
         services.AddSingleton<NodeFactory>();
+        services.AddSingleton<SceneManager>();
 
         return services;
     }

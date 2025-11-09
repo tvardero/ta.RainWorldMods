@@ -59,6 +59,8 @@ public class ColorRectangle : AreaNode
         _sprite.isVisible = IsVisible;
 
         base.OnDraw(deltaTime);
+
+        Logger.LogInformation("Drawed FSprite");
     }
 
     /// <inheritdoc />
@@ -77,5 +79,7 @@ public class ColorRectangle : AreaNode
             color = Color.ToUnityColor(),
             isVisible = IsVisible,
         };
+
+        Logger.LogInformation("Created FSprite");
     }
 }
