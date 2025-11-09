@@ -323,6 +323,22 @@ public class Node : IDisposable
         }
     }
 
+    internal void PropagateSceneEnter()
+    {
+        OnSceneEnter();
+
+        Node[] snapshot = GetChildrenSnapshot();
+        foreach (Node child in snapshot) { child.PropagateSceneEnter(); }
+    }
+
+    internal void PropagateSceneExit()
+    {
+        OnSceneExit();
+
+        Node[] snapshot = GetChildrenSnapshot();
+        foreach (Node child in snapshot) { child.PropagateSceneExit(); }
+    }
+
     protected virtual void OnAttachedToParent(Node parent) { }
 
     protected virtual void OnAttachedToScene(SceneRootNode scene) { }
@@ -384,22 +400,6 @@ public class Node : IDisposable
 
         Node[] snapshot = GetChildrenSnapshot();
         foreach (Node child in snapshot) { child.PropagateDetachedFromScene(scene); }
-    }
-
-    internal void PropagateSceneEnter()
-    {
-        OnSceneEnter();
-
-        Node[] snapshot = GetChildrenSnapshot();
-        foreach (Node child in snapshot) { child.PropagateSceneEnter(); }
-    }
-
-    internal void PropagateSceneExit()
-    {
-        OnSceneExit();
-
-        Node[] snapshot = GetChildrenSnapshot();
-        foreach (Node child in snapshot) { child.PropagateSceneExit(); }
     }
 
     private bool ShouldProcessDraw()

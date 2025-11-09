@@ -11,34 +11,7 @@ public class ColorRectangle : AreaNode
     /// <inheritdoc />
     public ColorRectangle(ILogger<ColorRectangle>? logger = null) : base(logger) { }
 
-    private Color _color = Color.DarkGray;
-
-    public Color Color
-    {
-        get => _color;
-
-        set
-        {
-            _color = value;
-            _sprite.color = value.ToUnityColor();
-        }
-    }
-
-    /// <inheritdoc />
-    protected override void OnAttachedToScene(SceneRootNode scene)
-    {
-        Futile.stage.AddChild(_sprite);
-
-        base.OnAttachedToScene(scene);
-    }
-
-    /// <inheritdoc />
-    protected override void OnDetachedFromScene(SceneRootNode scene)
-    {
-        Futile.stage.RemoveChild(_sprite);
-
-        base.OnDetachedFromScene(scene);
-    }
+    public Color Color { get; set; }
 
     /// <inheritdoc />
     protected override void OnDispose()
@@ -51,16 +24,14 @@ public class ColorRectangle : AreaNode
     /// <inheritdoc />
     protected override void OnDraw(TimeSpan deltaTime)
     {
+        base.OnDraw(deltaTime);
+
         _sprite.x = LocalPosition.X;
         _sprite.y = LocalPosition.Y;
         _sprite.scaleX = Size.Width;
         _sprite.scaleY = Size.Height;
         _sprite.color = Color.ToUnityColor();
         _sprite.isVisible = IsVisible;
-
-        base.OnDraw(deltaTime);
-
-        Logger.LogInformation("Drawed FSprite");
     }
 
     /// <inheritdoc />
@@ -68,18 +39,7 @@ public class ColorRectangle : AreaNode
     {
         base.OnInitialize();
 
-        _sprite = new FSprite("pixel")
-        {
-            anchorX = 0,
-            anchorY = 0,
-            x = LocalPosition.X,
-            y = LocalPosition.Y,
-            scaleX = Size.Width,
-            scaleY = Size.Height,
-            color = Color.ToUnityColor(),
-            isVisible = IsVisible,
-        };
-
-        Logger.LogInformation("Created FSprite");
+        _sprite = new FSprite("pixel");
+        Futile.stage.AddChild(_sprite);
     }
 }

@@ -3,8 +3,8 @@ using System.Drawing;
 using BepInEx;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using ta.UIKit.Nodes;
+using Color = UnityEngine.Color;
 
 namespace ta.UIKit;
 
@@ -13,22 +13,6 @@ public class UiKitPlugin : BaseUnityPlugin
 {
     private bool _initialized;
     private ServiceLocator? _serviceLocator;
-
-    [UsedImplicitly]
-    public void OnDisable()
-    {
-        Logger.LogInfo("ta.UIKit de-initializing");
-
-        try { _serviceLocator?.Dispose(); }
-        catch (Exception e)
-        {
-            Logger.LogError($"Failed to dispose service locator: {e.Message}");
-            throw;
-        }
-
-        Logger.LogInfo("ta.UIKit de-initialized");
-        _initialized = false;
-    }
 
     [UsedImplicitly]
     public void OnEnable()
@@ -48,9 +32,6 @@ public class UiKitPlugin : BaseUnityPlugin
             throw;
         }
 
-        try { Test(); }
-        catch (Exception e) { Logger.LogError($"Failed to test ta.UIKit: {e.Message} \n{e}"); }
-
         _initialized = true;
 
         On.RainWorld.OnModsInit += (orig, self) =>
@@ -60,6 +41,22 @@ public class UiKitPlugin : BaseUnityPlugin
         };
     }
 
+    [UsedImplicitly]
+    public void OnDisable()
+    {
+        Logger.LogInfo("ta.UIKit de-initializing");
+
+        try { _serviceLocator?.Dispose(); }
+        catch (Exception e)
+        {
+            Logger.LogError($"Failed to dispose service locator: {e.Message}");
+            throw;
+        }
+
+        Logger.LogInfo("ta.UIKit de-initialized");
+        _initialized = false;
+    }
+
     private static void Test()
     {
         var fsprite = new FSprite("pixel");
@@ -67,24 +64,25 @@ public class UiKitPlugin : BaseUnityPlugin
         fsprite.scaleY = 200;
         fsprite.x = 200;
         fsprite.y = 200;
-        fsprite.color = UnityEngine.Color.red;
+        fsprite.color = Color.red;
         fsprite.isVisible = true;
         Futile.stage.AddChild(fsprite);
-        
-        var serviceProvider = ServiceLocator.Instance.ServiceProvider;
-        
+
+        ServiceProvider serviceProvider = ServiceLocator.Instance.ServiceProvider;
+
         var nodeFactory = serviceProvider.GetRequiredService<NodeFactory>();
         var sceneManager = serviceProvider.GetRequiredService<SceneManager>();
 
         var rect = nodeFactory.Create<ColorRectangle>();
-        rect.Color = Color.IndianRed;
+        rect.Color = System.Drawing.Color.GreenYellow;
         rect.Size = new Size(100, 100);
         rect.LocalPosition = new Point(100, 100);
-        rect.ProcessDraw(TimeSpan.Zero);
 
         var scene = nodeFactory.Create<SceneRootNode>();
         scene.AddChild(rect);
 
         sceneManager.SwitchScene(scene);
+
+        scene.ProcessDraw(TimeSpan.Zero);
     }
 }

@@ -7,14 +7,14 @@ namespace ta.UIKit;
 
 public sealed class ServiceLocator : IDisposable
 {
+    private static ServiceLocator? _instance;
+
     private ServiceLocator(ServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
         Logger = serviceProvider.GetRequiredService<ILogger<ServiceLocator>>();
         LoggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
     }
-
-    private static ServiceLocator? _instance;
 
     public static ServiceLocator Instance
     {
