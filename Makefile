@@ -8,3 +8,14 @@ publish-first-mod:
 	cp ./src/ta.FirstMod/workshopdata.json ./dist/ta.FirstMod/
 	cp ./src/ta.FirstMod/thumbnail.png ./dist/ta.FirstMod/
 	rm -rf ./dist/src-ta.FirstMod/
+
+publish-ui-kit:
+	dotnet publish ./src/ta.UiKit/ --output dist/src-ta.UiKit
+	rm -rf ./dist/ta.UiKit/
+	mkdir -p ./dist/ta.UiKit/
+	mkdir -p ./dist/ta.UiKit/plugins/
+	cp -r ./dist/src-ta.UiKit/* ./dist/ta.UiKit/plugins/
+	cp ./src/ta.UiKit/modinfo.json ./dist/ta.UiKit/
+	cp ./src/ta.UiKit/workshopdata.json ./dist/ta.UiKit/
+	cp ./src/ta.UiKit/thumbnail.png ./dist/ta.UiKit/
+	rm -rf ./dist/src-ta.UiKit/
