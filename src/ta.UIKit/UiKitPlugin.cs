@@ -4,6 +4,7 @@ using BepInEx;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using ta.UIKit.Nodes;
+using UnityEngine;
 using Color = UnityEngine.Color;
 
 namespace ta.UIKit;
@@ -75,8 +76,8 @@ public class UiKitPlugin : BaseUnityPlugin
 
         var rect = nodeFactory.Create<ColorRectangle>();
         rect.Color = System.Drawing.Color.GreenYellow;
-        rect.Size = new Size(100, 100);
-        rect.LocalPosition = new Point(100, 100);
+        rect.Size = new Vector2(100, 100);
+        rect.LocalPosition = new Vector2(100, 100);
 
         var scene = nodeFactory.Create<SceneRootNode>();
         scene.AddChild(rect);

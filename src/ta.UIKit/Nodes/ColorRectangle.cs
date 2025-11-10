@@ -26,10 +26,10 @@ public class ColorRectangle : AreaNode
     {
         base.OnDraw(deltaTime);
 
-        _sprite.x = LocalPosition.X;
-        _sprite.y = LocalPosition.Y;
-        _sprite.scaleX = Size.Width;
-        _sprite.scaleY = Size.Height;
+        _sprite.x = LocalPosition.x;
+        _sprite.y = LocalPosition.y;
+        _sprite.scaleX = Size.x;
+        _sprite.scaleY = Size.y;
         _sprite.color = Color.ToUnityColor();
         _sprite.isVisible = IsVisible;
     }
