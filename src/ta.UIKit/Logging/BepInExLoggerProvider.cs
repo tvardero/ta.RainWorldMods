@@ -1,5 +1,4 @@
-﻿using System;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace ta.UIKit.Logging;

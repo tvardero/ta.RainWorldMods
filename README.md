@@ -1,9 +1,5 @@
 ﻿# ta.RainWorldModsPublic
 
-## License
-
-Do whatever you want with this code. Just don't republish it without my permission.
-
 ## ta.ModMaker
 
 ## ta.UiKit
@@ -43,3 +39,7 @@ Steps:
 1. Run Git Bash or any other terminal with Linux commands
 2. Run `make publish-uikit`
 3. Mod is at `/dist/ta.UiKit`, ready to be zipped
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

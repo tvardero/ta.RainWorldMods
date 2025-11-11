@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using BepInEx;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;

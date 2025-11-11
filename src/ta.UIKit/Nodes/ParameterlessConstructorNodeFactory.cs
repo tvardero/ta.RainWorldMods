@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ta.UIKit.Nodes;
+﻿namespace ta.UIKit.Nodes;
 
 public class ParameterlessConstructorNodeFactory<TNode> : NodeFactory<TNode>
 where TNode : Node, new()

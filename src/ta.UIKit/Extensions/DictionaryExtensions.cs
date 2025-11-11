@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ta.UIKit;
+﻿namespace ta.UIKit;
 
 public static class DictionaryExtensions
 {
