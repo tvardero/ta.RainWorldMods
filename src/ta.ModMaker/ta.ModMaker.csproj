@@ -14,4 +14,13 @@
     <PackageReference Include="Silk.NET.Windowing" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Fonts\FiraCode-LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Fonts\FiraCode-Light.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

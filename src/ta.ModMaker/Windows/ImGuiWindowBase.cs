@@ -18,10 +18,14 @@ public abstract class ImGuiWindowBase : IDisposable
 
         GL = Window.CreateOpenGL();
         Input = Window.CreateInput();
-        _imGuiController = new ImGuiController(GL, Window, Input);
+
+        var fontConfig = new ImGuiFontConfig("Fonts/FiraCode-Light.ttf", 16, io => io.Fonts.GetGlyphRangesCyrillic());
+        _imGuiController = new ImGuiController(GL, Window, Input, fontConfig);
 
         ImGui.GetIO().MouseDrawCursor = true;
         Input.Mice[0].Cursor.CursorMode = CursorMode.Hidden;
+
+        ImGui.GetIO().ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;
 
         Window.FramebufferResize += s => GL.Viewport(s);
         Window.Update += OnUpdate;
