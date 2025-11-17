@@ -1,9 +1,9 @@
 ﻿{
-  "id": "ta.ImGuiDevTools",
+  "id": "tvardero.DearDevTools",
   "name": "Dear Dev Tools",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "authors": "tvardero",
-  "description": "Dev Tools rewritten in Dear ImGui, with few additional features.",
+  "description": "Dev Tools rewritten in Dear ImGui, with few additional features. Use Ctrl+H to open the menu.",
   "requirements": ["rwimgui"],
   "requirements_names": ["Rain World ImGUI API"],
   "checksum_override_version": false

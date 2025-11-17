@@ -1,8 +1,9 @@
 ﻿using System.Numerics;
+using tvardero.ModMaker.Abstractions;
 
-namespace ta.ModMaker.DearDevTools.Menus;
+namespace tvardero.ModMaker.DearDevTools.Menus;
 
-public class DialogEditorMenu : SimpleWindowMenuBase
+public class DearDevToolsSettingsMenu : SimpleWindowMenuBase
 {
     /// <inheritdoc />
     public override string MenuName => "Dear Dev Tools Settings";

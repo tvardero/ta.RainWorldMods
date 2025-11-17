@@ -1,6 +1,6 @@
-﻿# ta.RainWorldModsPublic
+﻿# tvardero.RainWorldModsPublic
 
-## ta.ImGuiDevTools
+## tvardero.ImGuiDevTools
 
 ### Build
 
@@ -35,7 +35,7 @@ Steps:
 
 1. Run `dotnet tool restore` (only once you clone the repository)
 2. Run `dotnet cake --target Publish-ImGuiDevTools`
-3. Mod is at `/dist/ta.ImGuiDevTools`, ready to be zipped
+3. Mod is at `/dist/tvardero.ImGuiDevTools`, ready to be zipped
 
 ## License
 

@@ -2,7 +2,7 @@
 using ImGuiNET;
 using JetBrains.Annotations;
 
-namespace ta.ImGuiDevTools.ImMenus;
+namespace tvardero.DearDevTools.ImMenus;
 
 [SuppressUnmanagedCodeSecurity]
 public class MainImMenu

@@ -12,9 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_sln_root", "_sln_root", "{
 		build.cake = build.cake
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ta.ModMaker", "src\ta.ModMaker\ta.ModMaker.csproj", "{A74F5646-2D7D-4D68-911E-17DD0FE9BD12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tvardero.ModMaker", "src\tvardero.ModMaker\tvardero.ModMaker.csproj", "{A74F5646-2D7D-4D68-911E-17DD0FE9BD12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ta.ImGuiDevTools", "src\ta.ImGuiDevTools\ta.ImGuiDevTools.csproj", "{65C7BAD5-10BC-47BB-9DDD-AD1E48495088}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tvardero.ImGuiDevTools", "src\tvardero.DearDevTools\tvardero.DearDevTools.csproj", "{65C7BAD5-10BC-47BB-9DDD-AD1E48495088}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,17 +1,17 @@
 ﻿using BepInEx;
 using JetBrains.Annotations;
 using RWIMGUI.API;
-using ta.ImGuiDevTools.ImMenus;
+using tvardero.DearDevTools.ImMenus;
 
-namespace ta.ImGuiDevTools;
+namespace tvardero.DearDevTools;
 
 [BepInPlugin(ID, NAME, VERSION)]
 [BepInDependency(IMGUI_ID)]
-public sealed class ImGuiDevToolsPlugin : BaseUnityPlugin
+public sealed class DearDevToolsPlugin : BaseUnityPlugin
 {
-    public const string ID = "ta.ImGuiDevTools";
+    public const string ID = "tvardero.DearDevTools";
     public const string NAME = "Dear Dev Tools";
-    public const string VERSION = "0.0.1";
+    public const string VERSION = "0.0.2";
     public const string IMGUI_ID = "rwimgui";
 
     private bool _initialized;

@@ -1,4 +1,4 @@
-﻿namespace ta.ModMaker;
+﻿namespace tvardero.ModMaker.Abstractions;
 
 public abstract class ImGuiMenuBase : IImGuiMenu
 {

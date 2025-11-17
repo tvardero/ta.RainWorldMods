@@ -1,6 +1,7 @@
-﻿using ta.ModMaker.DearDevTools.Menus;
+﻿using tvardero.ModMaker.Abstractions;
+using tvardero.ModMaker.DearDevTools.Menus;
 
-namespace ta.ModMaker.DearDevTools;
+namespace tvardero.ModMaker.DearDevTools;
 
 public class DearDevTools
 {

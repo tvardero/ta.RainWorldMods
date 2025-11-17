@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
+using tvardero.ModMaker.Abstractions;
 
-namespace ta.ModMaker.DearDevTools.Menus;
+namespace tvardero.ModMaker.DearDevTools.Menus;
 
 public class ModEditorMenu : SimpleWindowMenuBase
 {
