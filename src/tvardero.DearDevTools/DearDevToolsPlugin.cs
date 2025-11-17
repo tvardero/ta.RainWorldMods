@@ -4,58 +4,55 @@ using RWIMGUI.API;
 
 namespace tvardero.DearDevTools;
 
-[BepInPlugin(ID, NAME, VERSION)]
-[BepInDependency(IMGUI_ID)]
+[BepInPlugin("tvardero.DearDevTools", "Dear Dev Tools", "0.0.4")]
+[BepInDependency("rwimgui")]
 public sealed class DearDevToolsPlugin : BaseUnityPlugin
 {
-    public const string ID = "tvardero.DearDevTools";
-    public const string NAME = "Dear Dev Tools";
-    public const string VERSION = "0.0.2";
-    public const string IMGUI_ID = "rwimgui";
-
     private static DearDevToolsPlugin? _instance;
     private DearDevTools _dearDevTools = null!;
     private DearDevToolsImGuiContext _imguiContext = null!;
-    private bool _initialized;
+
+    public static bool IsInitialized => _instance != null;
 
     public static DearDevToolsPlugin Instance => _instance ?? throw new InvalidOperationException("Plugin not initialized");
 
     [UsedImplicitly]
     public void Awake()
     {
-        if (_initialized) return;
+        if (IsInitialized) return;
 
-        Logger.LogInfo($"Initializing {ID}");
+        Logger.LogInfo("Initializing tvardero.DearDevTools");
 
-        On.RainWorld.OnModsInit += (orig, self) =>
-        {
-            orig(self);
+        On.RainWorld.OnModsInit += OnModsInit;
 
-            _dearDevTools = new DearDevTools();
-            _imguiContext = new DearDevToolsImGuiContext(_dearDevTools);
-
-            unsafe { ImGUIAPI.AddAlwaysCallback(&OnAlways); }
-        };
-
-        _initialized = true;
         _instance = this;
-        Logger.LogInfo($"Initialized {ID}");
+        Logger.LogInfo("Initialized tvardero.DearDevTools");
     }
 
-    private static void OnAlways(ref nint idxgiSwapChain, ref uint syncInterval, ref uint flags)
+    private void OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {
-        // todo move key to input config
-        if (ImGui.Shortcut(ImGuiKey.ModCtrl | ImGuiKey.H, ImGuiInputFlags.RouteAlways))
-        {
-            DearDevTools devTools = Instance._dearDevTools;
-            devTools.IsEnabled = !devTools.IsEnabled;
+        orig(self);
 
-            if (devTools.IsEnabled)
-            {
-                DearDevToolsImGuiContext imguiContext = Instance._imguiContext;
-                ImGUIAPI.SwitchContext(imguiContext);
-            }
-            else ImGUIAPI.SwitchContext(null);
-        }
+        _dearDevTools = new DearDevTools();
+        _imguiContext = new DearDevToolsImGuiContext(_dearDevTools);
+    }
+
+    [UsedImplicitly]
+    private void OnDisable()
+    {
+        if (!IsInitialized) return;
+
+        Logger.LogInfo("Deinitializing tvardero.DearDevTools");
+
+        _instance = null;
+
+        if (ImGUIAPI.CurrentContext == _imguiContext) ImGUIAPI.SwitchContext(null);
+
+        _imguiContext = null!;
+        _dearDevTools = null!;
+
+        On.RainWorld.OnModsInit -= OnModsInit;
+
+        Logger.LogInfo("Deinitialized tvardero.DearDevTools");
     }
 }

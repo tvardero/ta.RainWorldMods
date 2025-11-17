@@ -13,11 +13,6 @@ public class DearDevTools
 
     public bool ShouldBlockInputs => _inputBlockers.Count != 0;
 
-    public IDisposable GetInputBlockerLease()
-    {
-        return new InputBlockerLease(this);
-    }
-
     public void Draw()
     {
         if (!IsEnabled) return;
@@ -36,6 +31,11 @@ public class DearDevTools
         }
 
         foreach (IImGuiMenu menu in _menus.Values) { menu.Draw(); }
+    }
+
+    public IDisposable GetInputBlockerLease()
+    {
+        return new InputBlockerLease(this);
     }
 
     private void DrawMainMenu_Edit()
@@ -154,16 +154,16 @@ public class DearDevTools
         private DearDevTools? _dearDevTools;
         private object? _blocker;
 
-        ~InputBlockerLease()
-        {
-            Dispose();
-        }
-
         public InputBlockerLease(DearDevTools dearDevTools)
         {
             _dearDevTools = dearDevTools;
             _blocker = new object();
             dearDevTools._inputBlockers.Add(_blocker);
+        }
+
+        ~InputBlockerLease()
+        {
+            Dispose();
         }
 
         /// <inheritdoc />

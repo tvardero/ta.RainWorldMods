@@ -25,13 +25,13 @@ Steps:
 3. Run `dotnet tool restore` once after you have cloned the repository.
 4. Create `.env.local` file in the root of the repository if not exist, see `.env.local.example` for details.
 5. Run one of the available commands:
-   - `dotnet build` - builds the project.
-   - `dotnet cake --target=Clean` - clears the `dist/` folder in repository and runs `dotnet clean`.
-   - `dotnet cake --target=PackMod` - build the project in `Debug` configuration and packs the mod into `dist/` folder in repository.
-   - `dotnet cake --target=PackMod --configuration=Release` - same, but in `Release` configuration.
-   - `dotnet cake --target=CopyModToRW` - builds the project in `Debug` configuration and copies the mod into Rain World mods folder. Requires `RAINWORLD_PATH` environment variable to be set, see `.env.local.example` for details.
-   - `dotnet cake --target=CopyModToRW-Release` - same, but in `Release` configuration.
-   - `dotnet cake` - same as `dotnet cake --target=CopyModToRW`.
+    - `dotnet build` - builds the project.
+    - `dotnet cake --target=Clean` - clears the `dist/` folder in repository and runs `dotnet clean`.
+    - `dotnet cake --target=PackMod` - build the project in `Debug` configuration and packs the mod into `dist/` folder in repository.
+    - `dotnet cake --target=PackMod --configuration=Release` - same, but in `Release` configuration.
+    - `dotnet cake --target=CopyModToRW` - builds the project in `Debug` configuration and copies the mod into Rain World mods folder. Requires `RAINWORLD_PATH` environment variable to be set, see `.env.local.example` for details.
+    - `dotnet cake --target=CopyModToRW-Release` - same, but in `Release` configuration.
+    - `dotnet cake` - same as `dotnet cake --target=CopyModToRW`.
 
 ## License
 

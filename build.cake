@@ -2,8 +2,9 @@ var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
 var rainWorldPath = Argument("rainWorldPath", string.Empty);
 
-var projectPath = "./src/tvardero.DearDevTools";
-var outputPath = "./dist/tvardero.DearDevTools";
+var projectName = "tvardero.DearDevTools";
+var projectPath = $"./src/{projectName}";
+var outputPath = $"./dist/{projectName}";
 var pluginsPath = $"{outputPath}/plugins";
 
 Task("Clean")
@@ -26,7 +27,7 @@ Task("PackMod")
         Configuration = configuration,
         OutputDirectory = pluginsPath
     });
-    
+
     var modinfoSource = $"{projectPath}/modinfo.json";
     var modinfoTarget = $"{outputPath}/modinfo.json";
 
@@ -57,26 +58,23 @@ Task("CopyModToRW")
     .Does(() =>
 {
     if (string.IsNullOrEmpty(rainWorldPath)) rainWorldPath = EnvironmentVariable("RAINWORLD_PATH");
-    if (string.IsNullOrEmpty(rainWorldPath))
-    {
-        rainWorldPath = ReadEnvFile("RAINWORLD_PATH");
-    }
-
+    if (string.IsNullOrEmpty(rainWorldPath)) rainWorldPath = ReadEnvFile("RAINWORLD_PATH");
     if (string.IsNullOrEmpty(rainWorldPath)) throw new Exception("Rain World installation path is required. Specify it with --rainWorldPath argument, RAINWORLD_PATH environment variable or in .env or .env.local file.");
-    
-    var rainWorldModsPath = $"{rainWorldPath}/RainWorld_Data/StreamingAssets/mods";
 
-    if (!DirectoryExists(rainWorldModsPath))
+    var rainWorldModsPath = $"{rainWorldPath}/RainWorld_Data/StreamingAssets/mods";
+    var modPath = $"{rainWorldModsPath}/{projectName}";
+
+    if (!DirectoryExists(modPath))
     {
-        CreateDirectory(rainWorldModsPath);
+        CreateDirectory(modPath);
     }
     else
     {
-        CleanDirectory(rainWorldModsPath);
+        CleanDirectory(modPath);
     }
 
-    CopyDirectory(outputPath, rainWorldModsPath);
-    Information($"Copied to {rainWorldModsPath}");
+    CopyDirectory(outputPath, modPath);
+    Information($"Copied to {modPath}");
 });
 
 Task("CopyModToRW-Release")
