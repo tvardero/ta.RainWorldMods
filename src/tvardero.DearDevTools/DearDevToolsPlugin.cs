@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using JetBrains.Annotations;
 using RWIMGUI.API;
-using tvardero.DearDevTools.ImMenus;
 
 namespace tvardero.DearDevTools;
 
@@ -15,6 +14,8 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin
     public const string IMGUI_ID = "rwimgui";
 
     private bool _initialized;
+    private DearDevTools.DearDevTools _dearDevTools = null!;
+    private DearDevToolsImGuiContext _imguiContext = null!;
 
     [UsedImplicitly]
     public void Awake()
@@ -26,7 +27,9 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin
         On.RainWorld.OnModsInit += (orig, self) =>
         {
             orig(self);
-            unsafe { ImGUIAPI.AddMenuCallback(&MainImMenu.MenuCallback); }
+
+            _dearDevTools = new DearDevTools.DearDevTools();
+            _imguiContext = new DearDevToolsImGuiContext(_dearDevTools);
         };
 
         _initialized = true;

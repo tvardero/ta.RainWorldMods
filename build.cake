@@ -1,5 +1,5 @@
 var target = Argument("target", "Default");
-var project = Argument("project", "tvardero.ImGuiDevTools");
+var project = Argument("project", "tvardero.DearDevTools");
 var distDirectory = Directory("./dist");
 var srcDirectory = Directory("./src");
 var projectPath = srcDirectory + Directory(project);
@@ -78,17 +78,17 @@ Task("Publish")
     }
 });
 
-Task("Publish-ImGuiDevTools")
+Task("Publish-DearDevTools")
     .Does(() =>
 {
-    project = "tvardero.ImGuiDevTools";
+    project = "tvardero.DearDevTools";
     RunTarget("Publish");
 });
 
 Task("Default")
     .Does(() =>
 {
-    RunTarget("Publish-ImGuiDevTools");
+    RunTarget("Publish-DearDevTools");
 });
 
 RunTarget(target);
