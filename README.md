@@ -16,26 +16,22 @@ Prerequsites:
 
 Steps:
 
-1. Go to the RainWorld installation folder (**Steam/steamapps/common/Rain World**).
-2. Copy following `.dll` files from RainWorld folder to **thirdparty/** folder in repository:
-    - From **Rain World/BepInEx/core/**: `BepInEx.dll`
-    - From **Rain World/BepInEx/plugins/**: `HOOKS-Assembly-CSharp.dll`
-    - From **Rain World/BepInEx/utils/**: `PUBLIC-Assembly-CSharp.dll`
-    - From **Rain World/RainWorld_Data/Managed/**: `UnityEngine.dll`, `UnityEngine.CoreModule.dll`
-3. Go to the Steam workshop folder for Rain World (**Steam/steamapps/workshop/content/312520**). Go to ImGUI API mod folder (which is **3417372413**).
-4. Copy following `.dll` files from RainWorld folder to **thirdparty/** folder in repository:
-    - From **plugins/**: `ImGui.NET.dll`, `rain-world-imgui-api.dll`
-5. Run `dotnet build`
-
-### Packaging mod
-
-Requires that you have copied all `.dll` files from RainWorld installation folder to **thirdparty/** folder in repository. See the [build](#build) section for details.
-
-Steps:
-
-1. Run `dotnet tool restore` (only once you clone the repository)
-2. Run `dotnet cake --target Publish-DearDevTools`
-3. Mod is at `/dist/tvardero.DearDevTools`, ready to be zipped
+1. Go to the RainWorld installation folder (`Steam/steamapps/common/Rain World`).
+2. Copy following `.dll` files from RainWorld folder to `thirdparty/` folder in repository, if they don't exist:
+    - From `Rain World/BepInEx/core/`: `BepInEx.dll`
+    - From `Rain World/BepInEx/plugins/`: `HOOKS-Assembly-CSharp.dll`
+    - From `Rain World/BepInEx/utils/`: `PUBLIC-Assembly-CSharp.dll`
+    - From `Rain World/RainWorld_Data/Managed/`: `UnityEngine.dll`, `UnityEngine.CoreModule.dll`
+3. Run `dotnet tool restore` once after you have cloned the repository.
+4. Create `.env.local` file in the root of the repository if not exist, see `.env.local.example` for details.
+5. Run one of the available commands:
+   - `dotnet build` - builds the project.
+   - `dotnet cake --target=Clean` - clears the `dist/` folder in repository and runs `dotnet clean`.
+   - `dotnet cake --target=PackMod` - build the project in `Debug` configuration and packs the mod into `dist/` folder in repository.
+   - `dotnet cake --target=PackMod --configuration=Release` - same, but in `Release` configuration.
+   - `dotnet cake --target=CopyModToRW` - builds the project in `Debug` configuration and copies the mod into Rain World mods folder. Requires `RAINWORLD_PATH` environment variable to be set, see `.env.local.example` for details.
+   - `dotnet cake --target=CopyModToRW-Release` - same, but in `Release` configuration.
+   - `dotnet cake` - same as `dotnet cake --target=CopyModToRW`.
 
 ## License
 

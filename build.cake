@@ -1,94 +1,126 @@
 var target = Argument("target", "Default");
-var project = Argument("project", "tvardero.DearDevTools");
-var distDirectory = Directory("./dist");
-var srcDirectory = Directory("./src");
-var projectPath = srcDirectory + Directory(project);
-var distSrcDirectory = distDirectory + Directory($"src-{project}");
-var distProjectDirectory = distDirectory + Directory(project);
+var configuration = Argument("configuration", "Debug");
+var rainWorldPath = Argument("rainWorldPath", string.Empty);
+
+var projectPath = "./src/tvardero.DearDevTools";
+var outputPath = "./dist/tvardero.DearDevTools";
+var pluginsPath = $"{outputPath}/plugins";
 
 Task("Clean")
     .Does(() =>
 {
-    if (DirectoryExists(distDirectory))
+    DotNetClean(projectPath);
+
+    if (DirectoryExists(outputPath))
     {
-        CleanDirectory(distDirectory);
-        DeleteDirectory(distDirectory, new DeleteDirectorySettings {
-            Recursive = true,
-            Force = true
-        });
+        CleanDirectory(outputPath);
     }
 });
 
-Task("Publish")
+Task("PackMod")
+    .IsDependentOn("Clean")
     .Does(() =>
 {
-    // Clean the dist/src-{project} directory
-    if (DirectoryExists(distSrcDirectory))
+    DotNetPublish(projectPath, new DotNetPublishSettings
     {
-        CleanDirectory(distSrcDirectory);
-        DeleteDirectory(distSrcDirectory, new DeleteDirectorySettings {
-            Recursive = true,
-            Force = true
-        });
-    }
-
-    // Publish the project
-    DotNetPublish(projectPath.ToString(), new DotNetPublishSettings
-    {
-        Configuration = "Release",
-        OutputDirectory = distSrcDirectory
+        Configuration = configuration,
+        OutputDirectory = pluginsPath
     });
+    
+    var modinfoSource = $"{projectPath}/modinfo.json";
+    var modinfoTarget = $"{outputPath}/modinfo.json";
 
-    // Create dist/{project}/plugins directory
-    var pluginsDirectory = distProjectDirectory + Directory("plugins");
-    EnsureDirectoryExists(pluginsDirectory);
+    var thumbnailSource = $"{projectPath}/thumbnail.png";
+    var thumbnailTarget = $"{outputPath}/thumbnail.png";
 
-    // Copy published files to dist/{project}/plugins/
-    CopyDirectory(distSrcDirectory, pluginsDirectory);
-
-    // Copy modinfo.json
-    var modinfoPath = projectPath + File("modinfo.json");
-    if (FileExists(modinfoPath))
+    if (FileExists(modinfoSource))
     {
-        CopyFile(modinfoPath, distProjectDirectory + File("modinfo.json"));
+        CopyFile(modinfoSource, modinfoTarget);
+    }
+    else
+    {
+        Warning($"File not found: {modinfoSource}");
     }
 
-    // Copy workshopdata.json (optional)
-    var workshopdataPath = projectPath + File("workshopdata.json");
-    if (FileExists(workshopdataPath))
+    if (FileExists(thumbnailSource))
     {
-        CopyFile(workshopdataPath, distProjectDirectory + File("workshopdata.json"));
+        CopyFile(thumbnailSource, thumbnailTarget);
     }
-
-    // Copy thumbnail.png (optional)
-    var thumbnailPath = projectPath + File("thumbnail.png");
-    if (FileExists(thumbnailPath))
+    else
     {
-        CopyFile(thumbnailPath, distProjectDirectory + File("thumbnail.png"));
-    }
-
-    // Clean up the temporary src directory
-    if (DirectoryExists(distSrcDirectory))
-    {
-        CleanDirectory(distSrcDirectory);
-        DeleteDirectory(distSrcDirectory, new DeleteDirectorySettings {
-            Recursive = true,
-            Force = true
-        });
+        Warning($"File not found: {thumbnailSource}");
     }
 });
 
-Task("Publish-DearDevTools")
+Task("CopyModToRW")
+    .IsDependentOn("PackMod")
     .Does(() =>
 {
-    project = "tvardero.DearDevTools";
-    RunTarget("Publish");
+    if (string.IsNullOrEmpty(rainWorldPath)) rainWorldPath = EnvironmentVariable("RAINWORLD_PATH");
+    if (string.IsNullOrEmpty(rainWorldPath))
+    {
+        rainWorldPath = ReadEnvFile("RAINWORLD_PATH");
+    }
+
+    if (string.IsNullOrEmpty(rainWorldPath)) throw new Exception("Rain World installation path is required. Specify it with --rainWorldPath argument, RAINWORLD_PATH environment variable or in .env or .env.local file.");
+    
+    var rainWorldModsPath = $"{rainWorldPath}/RainWorld_Data/StreamingAssets/mods";
+
+    if (!DirectoryExists(rainWorldModsPath))
+    {
+        CreateDirectory(rainWorldModsPath);
+    }
+    else
+    {
+        CleanDirectory(rainWorldModsPath);
+    }
+
+    CopyDirectory(outputPath, rainWorldModsPath);
+    Information($"Copied to {rainWorldModsPath}");
+});
+
+Task("CopyModToRW-Release")
+    .Does(() =>
+{
+    configuration = "Release";
+    RunTarget("CopyModToRW");
 });
 
 Task("Default")
-    .Does(() =>
-{
-    RunTarget("Publish-DearDevTools");
-});
+    .IsDependentOn("CopyModToRW");
 
 RunTarget(target);
+
+// Helper method to read environment variable from .env files
+string ReadEnvFile(string key)
+{
+    var envFiles = new[] { ".env.local", ".env" };
+
+    foreach (var envFile in envFiles)
+    {
+        if (FileExists(envFile))
+        {
+            var lines = System.IO.File.ReadAllLines(envFile);
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("#"))
+                    continue;
+
+                var parts = line.Split(new[] { '=' }, 2);
+                if (parts.Length == 2 && parts[0].Trim() == key)
+                {
+                    var value = parts[1].Trim();
+                    // Remove surrounding quotes if present
+                    if ((value.StartsWith("\"") && value.EndsWith("\"")) ||
+                        (value.StartsWith("'") && value.EndsWith("'")))
+                    {
+                        value = value.Substring(1, value.Length - 2);
+                    }
+                    return value;
+                }
+            }
+        }
+    }
+
+    return null;
+}

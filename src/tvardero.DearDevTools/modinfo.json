@@ -1,7 +1,7 @@
 ﻿{
   "id": "tvardero.DearDevTools",
   "name": "Dear Dev Tools",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "authors": "tvardero",
   "description": "Dev Tools rewritten in Dear ImGui, with few additional features. Use Ctrl+H to open the menu.",
   "requirements": [

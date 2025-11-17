@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_sln_root", "_sln_root", "{
 		.editorconfig = .editorconfig
 		build.cake = build.cake
 		Directory.Build.props = Directory.Build.props
+		.env.local = .env.local
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tvardero.DearDevTools", "src\tvardero.DearDevTools\tvardero.DearDevTools.csproj", "{65C7BAD5-10BC-47BB-9DDD-AD1E48495088}"
