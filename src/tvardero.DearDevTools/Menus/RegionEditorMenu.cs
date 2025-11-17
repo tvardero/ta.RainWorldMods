@@ -1,6 +1,6 @@
 ﻿using tvardero.DearDevTools.Abstractions;
 
-namespace tvardero.DearDevTools.DearDevTools.Menus;
+namespace tvardero.DearDevTools.Menus;
 
 public class RegionEditorMenu : SimpleWindowMenuBase
 {

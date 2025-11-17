@@ -48,7 +48,7 @@ window.Render += delta =>
     imguiIo.AddKeyEvent(ImGuiKey.ModCtrl, keyboard.IsKeyPressed(Key.ControlLeft) || keyboard.IsKeyPressed(Key.ControlRight));
     imguiIo.AddKeyEvent(ImGuiKey.ModShift, keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight));
 
-    if (ImGui.Shortcut(ImGuiKey.ModCtrl | ImGuiKey.H, ImGuiInputFlags.RouteAlways)) { dearDevTools.IsEnabled = !dearDevTools.IsEnabled; }
+    if (ImGui.Shortcut(ImGuiKey.ModCtrl | ImGuiKey.H, ImGuiInputFlags.RouteAlways)) dearDevTools.IsEnabled = !dearDevTools.IsEnabled;
 
     dearDevTools.Draw();
 

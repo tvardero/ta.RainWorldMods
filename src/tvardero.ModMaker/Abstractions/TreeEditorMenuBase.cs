@@ -17,7 +17,7 @@ public abstract class TreeEditorMenuBase : SimpleWindowMenuBase
         // right side
     }
 
-    protected abstract void OnDrawTree();
-
     protected abstract void OnDrawSelected();
+
+    protected abstract void OnDrawTree();
 }

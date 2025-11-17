@@ -18,10 +18,10 @@ Steps:
 
 1. Go to the RainWorld installation folder (**Steam/steamapps/common/Rain World**).
 2. Copy following `.dll` files from RainWorld folder to **thirdparty/** folder in repository:
-    - From **Rain World/BepInEx/core/**: `0Harmony.dll`, `BepInEx.dll`, `Mono.Cecil.dll`, `MonoMod.Utils.dll`
+    - From **Rain World/BepInEx/core/**: `BepInEx.dll`
     - From **Rain World/BepInEx/plugins/**: `HOOKS-Assembly-CSharp.dll`
     - From **Rain World/BepInEx/utils/**: `PUBLIC-Assembly-CSharp.dll`
-    - From **Rain World/RainWorld_Data/Managed/**: `Assembly-CSharp-firstpass.dll`, `GoKit.dll`, `Rewired_Core.dll`, `UnityEngine.dll`, `UnityEngine.CoreModule.dll`, `UnityEngine.InputLegacyModule.dll`
+    - From **Rain World/RainWorld_Data/Managed/**: `UnityEngine.dll`, `UnityEngine.CoreModule.dll`
 3. Go to the Steam workshop folder for Rain World (**Steam/steamapps/workshop/content/312520**). Go to ImGUI API mod folder (which is **3417372413**).
 4. Copy following `.dll` files from RainWorld folder to **thirdparty/** folder in repository:
     - From **plugins/**: `ImGui.NET.dll`, `rain-world-imgui-api.dll`

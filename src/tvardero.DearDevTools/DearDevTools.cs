@@ -1,14 +1,22 @@
-﻿using tvardero.ModMaker.Abstractions;
-using tvardero.ModMaker.DearDevTools.Menus;
+﻿using tvardero.DearDevTools.Abstractions;
+using tvardero.DearDevTools.Menus;
 
-namespace tvardero.ModMaker.DearDevTools;
+namespace tvardero.DearDevTools;
 
 public class DearDevTools
 {
     private readonly Dictionary<string, IImGuiMenu> _menus = new();
+    private readonly List<object> _inputBlockers = [];
     private bool _notificationsHistoryShortcutEnabled;
 
     public bool IsEnabled { get; set; }
+
+    public bool ShouldBlockInputs => _inputBlockers.Count != 0;
+
+    public IDisposable GetInputBlockerLease()
+    {
+        return new InputBlockerLease(this);
+    }
 
     public void Draw()
     {
@@ -138,6 +146,36 @@ public class DearDevTools
             case true: menu.Enable(); break;
             case false: menu.Disable(); break;
             case null: menu.ToggleEnabled(); break;
+        }
+    }
+
+    private sealed class InputBlockerLease : IDisposable
+    {
+        private DearDevTools? _dearDevTools;
+        private object? _blocker;
+
+        ~InputBlockerLease()
+        {
+            Dispose();
+        }
+
+        public InputBlockerLease(DearDevTools dearDevTools)
+        {
+            _dearDevTools = dearDevTools;
+            _blocker = new object();
+            dearDevTools._inputBlockers.Add(_blocker);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (_dearDevTools == null || _blocker == null) return;
+
+            _dearDevTools._inputBlockers.Remove(_blocker);
+            _dearDevTools = null;
+            _blocker = null;
+
+            GC.SuppressFinalize(this);
         }
     }
 }

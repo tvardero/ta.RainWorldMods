@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using tvardero.ModMaker.Abstractions;
+﻿using tvardero.ModMaker.Abstractions;
 
 namespace tvardero.ModMaker.DearDevTools.Menus;
 
@@ -11,7 +10,7 @@ public class MapEditorMenu : ImGuiMenuBase
     /// <inheritdoc />
     protected override void OnDraw()
     {
-        var viewport = ImGui.GetMainViewport();
+        ImGuiViewportPtr viewport = ImGui.GetMainViewport();
 
         ImGui.SetNextWindowPos(viewport.WorkPos);
         ImGui.SetNextWindowSize(viewport.WorkSize);

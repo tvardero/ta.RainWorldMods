@@ -39,7 +39,7 @@ public abstract class ImGuiMenuBase : IImGuiMenu
     {
         _isEnabled = !_isEnabled;
 
-        if (_isEnabled) { OnEnable(); }
+        if (_isEnabled) OnEnable();
         else OnDisable();
     }
 

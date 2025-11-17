@@ -483,8 +483,13 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-# RainWorld and Unity DLL files
-thirdparty/*.dll
+# Allowed dll files
+thirdparty/*
+!thirdparty/System.Numerics.dll
+!thirdparty/System.Numerics.Vectors.dll
+!thirdparty/BepInEx.dll
+!thirdparty/ImGui.NET.dll
+!thirdparty/rain-world-imgui-api.dll
 
 # Publish output
 dist/

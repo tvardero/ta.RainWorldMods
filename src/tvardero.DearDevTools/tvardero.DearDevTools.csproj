@@ -11,21 +11,9 @@
       <Private>false</Private>
       <HintPath>..\..\thirdparty\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="ImGui.NET">
+    <Reference Include="System.Numerics">
       <Private>false</Private>
-      <HintPath>..\..\thirdparty\ImGui.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="rain-world-imgui-api">
-      <Private>false</Private>
-      <HintPath>..\..\thirdparty\rain-world-imgui-api.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <Private>false</Private>
-      <HintPath>..\..\thirdparty\PUBLIC-Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="HOOKS-Assembly-CSharp">
-      <Private>false</Private>
-      <HintPath>..\..\thirdparty\HOOKS-Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\thirdparty\System.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <Private>false</Private>
@@ -35,19 +23,22 @@
       <Private>false</Private>
       <HintPath>..\..\thirdparty\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Fonts\FiraCode-LICENSE.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Fonts\FiraCode-Light.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
+    <Reference Include="Assembly-CSharp">
+      <Private>false</Private>
+      <HintPath>..\..\thirdparty\PUBLIC-Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="HOOKS-Assembly-CSharp">
+      <Private>false</Private>
+      <HintPath>..\..\thirdparty\HOOKS-Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="rain-world-imgui-api">
+      <Private>false</Private>
+      <HintPath>..\..\thirdparty\rain-world-imgui-api.dll</HintPath>
+    </Reference>
+    <Reference Include="ImGui.NET">
+      <Private>false</Private>
+      <HintPath>..\..\thirdparty\ImGui.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

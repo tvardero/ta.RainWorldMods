@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using tvardero.ModMaker.Abstractions;
+﻿using tvardero.ModMaker.Abstractions;
 
 namespace tvardero.ModMaker.DearDevTools.Menus;
 

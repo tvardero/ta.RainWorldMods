@@ -1,8 +1,8 @@
 ﻿using tvardero.DearDevTools.Abstractions;
 
-namespace tvardero.DearDevTools.DearDevTools.Menus;
+namespace tvardero.DearDevTools.Menus;
 
-public class DearDevToolsSettingsMenu : SimpleWindowMenuBase
+public class DialogEditorMenu : SimpleWindowMenuBase
 {
     /// <inheritdoc />
     public override string MenuName => "Dear Dev Tools Settings";
