@@ -9,7 +9,7 @@ public class DearDevTools
     private readonly List<object> _inputBlockers = [];
     private bool _notificationsHistoryShortcutEnabled;
 
-    public bool IsEnabled { get; set; }
+    public bool IsEnabled { get; set; } = true;
 
     public bool ShouldBlockInputs => _inputBlockers.Count != 0;
 

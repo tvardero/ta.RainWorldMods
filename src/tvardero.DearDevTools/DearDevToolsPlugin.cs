@@ -8,6 +8,7 @@ namespace tvardero.DearDevTools;
 [BepInDependency("rwimgui")]
 public sealed class DearDevToolsPlugin : BaseUnityPlugin
 {
+    private static bool _imguiApiCallbacksRegistered;
     private static DearDevToolsPlugin? _instance;
     private DearDevTools _dearDevTools = null!;
     private DearDevToolsImGuiContext _imguiContext = null!;
@@ -21,20 +22,35 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin
     {
         if (IsInitialized) return;
 
-        Logger.LogInfo("Initializing tvardero.DearDevTools");
-
         On.RainWorld.OnModsInit += OnModsInit;
-
-        _instance = this;
-        Logger.LogInfo("Initialized tvardero.DearDevTools");
     }
 
     private void OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {
         orig(self);
 
+        if (IsInitialized) return;
+
+        Logger.LogInfo("Initializing tvardero.DearDevTools");
+
         _dearDevTools = new DearDevTools();
         _imguiContext = new DearDevToolsImGuiContext(_dearDevTools);
+
+        if (!_imguiApiCallbacksRegistered)
+        {
+            unsafe { ImGUIAPI.AddOnWindowCloseCallback(&OnImGUIApiMenuClose); }
+
+            _imguiApiCallbacksRegistered = true;
+        }
+
+        _instance = this;
+        Logger.LogInfo("Initialized tvardero.DearDevTools");
+    }
+
+    private static void OnImGUIApiMenuClose()
+    {
+        // TODO: this is bad, need to use keybinds
+        if (IsInitialized && ImGUIAPI.CurrentContext != Instance._imguiContext) { ImGUIAPI.SwitchContext(Instance._imguiContext); }
     }
 
     [UsedImplicitly]
@@ -52,6 +68,13 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin
         _dearDevTools = null!;
 
         On.RainWorld.OnModsInit -= OnModsInit;
+
+        if (_imguiApiCallbacksRegistered)
+        {
+            unsafe { ImGUIAPI.RemoveOnWindowCloseCallback(&OnImGUIApiMenuClose); }
+
+            _imguiApiCallbacksRegistered = false;
+        }
 
         Logger.LogInfo("Deinitialized tvardero.DearDevTools");
     }

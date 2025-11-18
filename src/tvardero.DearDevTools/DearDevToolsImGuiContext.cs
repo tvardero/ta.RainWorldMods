@@ -18,6 +18,7 @@ public class DearDevToolsImGuiContext : IMGUIContext
     }
 
     /// <inheritdoc />
+    // ReSharper disable InconsistentNaming
     public override void Render(ref IntPtr IDXGISwapChain, ref uint SyncInterval, ref uint Flags)
     {
         _dearDevTools.Draw();
