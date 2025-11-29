@@ -4,6 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +28,10 @@
     <Reference Include="UnityEngine.CoreModule">
       <Private>false</Private>
       <HintPath>..\..\thirdparty\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <Private>false</Private>
+      <HintPath>..\..\thirdparty\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <Private>false</Private>

@@ -5,7 +5,7 @@ namespace tvardero.DearDevTools.Menus;
 public class MainMenuBar : ImGuiDrawableBase
 {
     /// <inheritdoc />
-    public override bool IsBlockingRWInput => false;
+    public override bool IsBlockingWMEvent => false;
 
     /// <inheritdoc />
     protected override void OnDraw()

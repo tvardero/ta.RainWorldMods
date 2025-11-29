@@ -2,7 +2,7 @@
 
 namespace tvardero.DearDevTools.Components;
 
-public abstract class SimpleWindowBase : ImGuiDrawableBase
+public abstract class SimpleImGuiWindowBase : ImGuiDrawableBase
 {
     private bool _isVisible;
 

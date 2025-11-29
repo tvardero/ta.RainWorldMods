@@ -1,5 +1,8 @@
 ﻿using BepInEx;
+using JetBrains.Annotations;
+using tvardero.DearDevTools.Components;
 using tvardero.DearDevTools.Internal;
+using UnityEngine;
 
 namespace tvardero.DearDevTools;
 
@@ -8,9 +11,12 @@ namespace tvardero.DearDevTools;
 /// </summary>
 [BepInPlugin("tvardero.DearDevTools", "Dear Dev Tools", "0.0.4")]
 [BepInDependency("rwimgui")]
-public sealed class DearDevToolsPlugin : BaseUnityPlugin
+public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable
 {
     private static DearDevToolsPlugin? _instance;
+
+    private readonly List<Func<DearDevToolsPlugin, ImGuiDrawableBase>> _registeredDrawables = [];
+    private ModImGuiContext _imGuiContext = null!;
 
     /// <summary>
     /// Singleton instance of fully initialized Dear Dev Tools mod.
@@ -23,63 +29,49 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin
     /// </summary>
     public static bool IsInitialized => _instance != null;
 
-    internal ModContext ModContext { get; private set; } = null!;
+    /// <summary>
+    /// Main UI visible. Includes main menu bar, room info panel, room settings panel, and others by default.
+    /// </summary>
+    public bool IsMainUiVisible { get; private set; }
 
     /// <summary>
-    /// Enable quick tools.
+    /// Quick tools enabled. Includes many utils like 'reset rain timer', 'teleport player', 'kill all creatures' and others by default.
+    /// Can not be disabled while <see cref="IsMainUiVisible" /> is true;
     /// </summary>
-    public void EnableQuickTools()
+    public bool AreQuickToolsEnabled
     {
-        ModContext.QuickToolsEnabled = true;
+        get => IsMainUiVisible || field;
+        private set;
     }
 
     /// <summary>
-    /// Disable quick tools.
+    /// List of windows to render.
     /// </summary>
-    public void DisableQuickTools()
+    public IReadOnlyList<ImGuiDrawableBase> RenderList { get; private set; } = null!;
+
+    [UsedImplicitly]
+    private void Update()
     {
-        ModContext.QuickToolsEnabled = false;
+        if (_instance != this) return;
+
+        // todo: make configurable
+
+        bool ctrlPressed = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+        bool hPressed = Input.GetKeyDown(KeyCode.H);
+        bool oPressed = Input.GetKeyDown(KeyCode.O);
+
+        if (ctrlPressed && hPressed) ShowMainUi(!IsMainUiVisible);
+
+        if (ctrlPressed && oPressed) EnableQuickTools(!AreQuickToolsEnabled);
     }
 
-    /// <summary>
-    /// Toggle quick tools.
-    /// </summary>
-    /// <param name="state"> Optional parameter to directly specify the state. </param>
-    public void ToggleQuickTools(bool? state = null)
-    {
-        ModContext.QuickToolsEnabled = state ?? !ModContext.QuickToolsEnabled;
-    }
-
-    /// <summary>
-    /// Show Dear Dev Tools main UI.
-    /// </summary>
-    public void ShowMainUi()
-    {
-        ModContext.MainUiVisible = true;
-    }
-
-    /// <summary>
-    /// Hide Dear Dev Tools main UI.
-    /// </summary>
-    public void HideMainUi()
-    {
-        ModContext.MainUiVisible = false;
-    }
-
-    /// <summary>
-    /// Toggle Dear Dev Tools main UI.
-    /// </summary>
-    /// <param name="state"> Optional parameter to directly specify the state. </param>
-    public void ToggleMainUi(bool? state = null)
-    {
-        ModContext.MainUiVisible = state ?? !ModContext.MainUiVisible;
-    }
-
+    [UsedImplicitly]
     private void OnEnable()
     {
         On.RainWorld.OnModsInit += OnModsInit;
     }
 
+    [UsedImplicitly]
     private void OnDisable()
     {
         On.RainWorld.OnModsInit -= OnModsInit;
@@ -87,7 +79,55 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin
         if (_instance != this) return;
 
         _instance = null;
-        ModContext.Dispose();
+        _imGuiContext.Dispose();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _imGuiContext.Dispose();
+    }
+
+    public event Action<bool>? OnMainUiVisibleChange;
+
+    public event Action<bool>? OnQuickToolsEnabledChange;
+
+    /// <summary>
+    /// Disable quick tools. Can't be disabled while <see cref="IsMainUiVisible" /> is true.
+    /// </summary>
+    public void DisableQuickTools()
+    {
+        AreQuickToolsEnabled = false;
+        OnQuickToolsEnabledChange?.Invoke(false);
+    }
+
+    /// <summary>
+    /// Enable quick tools. Can't be disabled while <see cref="IsMainUiVisible" /> is true.
+    /// </summary>
+    /// <param name="enable"> Value to set. Default is true. </param>
+    public void EnableQuickTools(bool enable = true)
+    {
+        AreQuickToolsEnabled = enable;
+        OnQuickToolsEnabledChange?.Invoke(enable);
+    }
+
+    /// <summary>
+    /// Hide Dear Dev Tools main UI.
+    /// </summary>
+    public void HideMainUi()
+    {
+        IsMainUiVisible = false;
+        OnMainUiVisibleChange?.Invoke(false);
+    }
+
+    /// <summary>
+    /// Show Dear Dev Tools main UI.
+    /// </summary>
+    /// <param name="show"> Value to set. Default is true. </param>
+    public void ShowMainUi(bool show = true)
+    {
+        IsMainUiVisible = show;
+        OnMainUiVisibleChange?.Invoke(show);
     }
 
     private void OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
@@ -96,7 +136,54 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin
 
         if (_instance == this) return;
 
-        ModContext = ModContext.Create();
+        _imGuiContext = new ModImGuiContext(this);
+        RenderList = _imGuiContext.RenderList.AsReadOnly();
+
+        RecreateImGuiDrawablesInContext();
+
         _instance = this;
+    }
+
+    /// <summary>
+    /// Register ImGui window or menu to draw with Dear Dev Tools. Call <see cref="RecreateImGuiDrawablesInContext" /> after registering all
+    /// drawables.
+    /// </summary>
+    /// <param name="drawable"> Drawable instance. </param>
+    public void RegisterImGuiDrawable(ImGuiDrawableBase drawable)
+    {
+        RegisterImGuiDrawable(_ => drawable);
+    }
+
+    /// <summary>
+    /// Register ImGui window or menu to draw with Dear Dev Tools. Call <see cref="RecreateImGuiDrawablesInContext" /> after registering all
+    /// drawables.
+    /// </summary>
+    /// <param name="drawableFactory"> Factory that accepts active Dear Dev Tools plugin instance and returns drawable instance. </param>
+    public void RegisterImGuiDrawable(Func<DearDevToolsPlugin, ImGuiDrawableBase> drawableFactory)
+    {
+        _registeredDrawables.Add(drawableFactory);
+    }
+
+    /// <summary>
+    /// Recreate Dear Dev Tools drawable list.
+    /// </summary>
+    public void RecreateImGuiDrawablesInContext()
+    {
+        IEnumerable<ImGuiDrawableBase?> drawablesToRegister = _registeredDrawables
+            .Select(factory =>
+            {
+                try { return factory(this); }
+                catch (Exception e)
+                {
+                    Logger.LogError("Failed to create ImGui drawable\n" + e.Message);
+                    return null;
+                }
+            })
+            .Where(drawable => drawable != null)
+            .GroupBy(drawable => drawable!.GetType())
+            .Select(group => group.Last());
+
+        _imGuiContext.RenderList.Clear();
+        _imGuiContext.RenderList.AddRange(drawablesToRegister!);
     }
 }

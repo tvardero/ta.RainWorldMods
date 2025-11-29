@@ -14,7 +14,7 @@ public class MapEditorMenu : ImGuiDrawableBase
     }
 
     /// <inheritdoc />
-    public override bool IsBlockingRWInput => true;
+    public override bool IsBlockingWMEvent => true;
 
     /// <inheritdoc />
     protected override void OnDraw()

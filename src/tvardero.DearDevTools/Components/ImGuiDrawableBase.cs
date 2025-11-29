@@ -4,7 +4,7 @@ public abstract class ImGuiDrawableBase
 {
     public virtual bool IsVisible { get; set; }
 
-    public abstract bool IsBlockingRWInput { get; }
+    public abstract bool IsBlockingWMEvent { get; }
 
     internal void Draw()
     {
