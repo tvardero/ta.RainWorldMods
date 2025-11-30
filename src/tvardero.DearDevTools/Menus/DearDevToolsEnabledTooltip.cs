@@ -1,4 +1,5 @@
-﻿using tvardero.DearDevTools.Components;
+﻿using System.Numerics;
+using tvardero.DearDevTools.Components;
 
 namespace tvardero.DearDevTools.Menus;
 
@@ -16,11 +17,11 @@ public class DearDevToolsEnabledTooltip : ImGuiDrawableBase
     /// <inheritdoc />
     public override void Draw()
     {
-        var io = ImGui.GetIO();
+        ImGuiIOPtr io = ImGui.GetIO();
         const float _PADDING = 10f;
-        var windowSize = new System.Numerics.Vector2(250, 50);
+        var windowSize = new Vector2(250, 50);
 
-        ImGui.SetNextWindowPos(new System.Numerics.Vector2(io.DisplaySize.X - windowSize.X - _PADDING, io.DisplaySize.Y - windowSize.Y - _PADDING),
+        ImGui.SetNextWindowPos(new Vector2(io.DisplaySize.X - windowSize.X - _PADDING, io.DisplaySize.Y - windowSize.Y - _PADDING),
             ImGuiCond.Always);
 
         ImGui.SetNextWindowSize(windowSize, ImGuiCond.Always);
