@@ -2,22 +2,22 @@
 
 namespace tvardero.DearDevTools.Menus;
 
-internal class TestMenu : SimpleImGuiWindowBase
+internal sealed class TestMenu : SimpleImGuiWindowBase
 {
-    public TestMenu(DearDevToolsPlugin plugin)
+    /// <inheritdoc />
+    public TestMenu()
     {
-        plugin.OnMainUiVisibleChange += visible => { IsVisible = visible; };
+        Current = this;
     }
 
-    /// <inheritdoc />
-    public override bool IsBlockingWMEvent => true;
-
+    public static TestMenu Current { get; private set; } = null!;
+    
     /// <inheritdoc />
     public override string Name => "Test menu";
 
     /// <inheritdoc />
     protected override void OnDrawWindowContent()
     {
-        ImGui.Text("Test menu. Hello World!");
+        ImGui.Text("Hello from test menu");
     }
 }

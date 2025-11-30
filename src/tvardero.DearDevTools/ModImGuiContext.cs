@@ -1,7 +1,7 @@
 ﻿using RWIMGUI.API;
 using tvardero.DearDevTools.Components;
 
-namespace tvardero.DearDevTools.Internal;
+namespace tvardero.DearDevTools;
 
 internal sealed class ModImGuiContext : IMGUIContext, IDisposable
 {
@@ -19,13 +19,19 @@ internal sealed class ModImGuiContext : IMGUIContext, IDisposable
 
     public void Activate()
     {
-        ImGUIAPI.SwitchContext(this);
+        if (!IsActive) ImGUIAPI.SwitchContext(this);
     }
 
     /// <inheritdoc />
     public override bool BlockWMEvent()
     {
-        return RenderList.All(d => !d.IsBlockingWMEvent);
+        if (_disposed) return false;
+        if (!_plugin.AreDearDevToolsActive) return false;
+
+        return RenderList
+            .Where(drawable => drawable.IsVisible)
+            .Where(drawable => !drawable.RequiresMainUiShown || _plugin.IsMainUiVisible)
+            .Any(drawable => drawable.IsBlockingWMEvent);
     }
 
     public void Deactivate()
@@ -36,6 +42,8 @@ internal sealed class ModImGuiContext : IMGUIContext, IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
+        if (IsActive) Deactivate();
+
         _disposed = true;
         RenderList.Clear();
     }
@@ -44,7 +52,12 @@ internal sealed class ModImGuiContext : IMGUIContext, IDisposable
     public override void Render(ref IntPtr IDXGISwapChain, ref uint SyncInterval, ref uint Flags)
     {
         if (_disposed) return;
+        if (!_plugin.AreDearDevToolsActive) return;
 
-        foreach (ImGuiDrawableBase drawable in RenderList) { drawable.Draw(); }
+        IEnumerable<ImGuiDrawableBase> toDraw = RenderList
+            .Where(drawable => drawable.IsVisible)
+            .Where(drawable => !drawable.RequiresMainUiShown || _plugin.IsMainUiVisible);
+
+        foreach (ImGuiDrawableBase drawable in toDraw) { drawable.Draw(); }
     }
 }

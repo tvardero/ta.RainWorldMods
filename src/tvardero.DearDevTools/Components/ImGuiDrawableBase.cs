@@ -2,16 +2,11 @@
 
 public abstract class ImGuiDrawableBase
 {
-    public virtual bool IsVisible { get; set; }
+    public virtual bool IsVisible { get; set; } = true;
 
-    public abstract bool IsBlockingWMEvent { get; }
+    public virtual bool RequiresMainUiShown { get; set; } = true;
 
-    internal void Draw()
-    {
-        if (!IsVisible) return;
+    public virtual bool IsBlockingWMEvent { get; set; } = true;
 
-        OnDraw();
-    }
-
-    protected abstract void OnDraw();
+    public abstract void Draw();
 }

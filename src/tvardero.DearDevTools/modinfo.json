@@ -3,7 +3,7 @@
   "name": "Dear Dev Tools",
   "version": "0.0.5",
   "authors": "tvardero",
-  "description": "Original devtools being rewritten using Dear ImGui, with few additional blinkers and whistles.<LINE><LINE>Open or close UI with Ctrl+H.",
+  "description": "Original devtools being rewritten using Dear ImGui, with few additional blinkers and whistles.<LINE><LINE>Activate Dear Dev Tools with Ctrl+O and then open UI with Ctrl+H.",
   "requirements": [
     "rwimgui"
   ],

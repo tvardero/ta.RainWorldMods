@@ -4,7 +4,7 @@ namespace tvardero.DearDevTools.Components;
 
 public abstract class SimpleImGuiWindowBase : ImGuiDrawableBase
 {
-    private bool _isVisible;
+    private bool _isVisible = true;
 
     /// <inheritdoc />
     public override bool IsVisible
@@ -16,7 +16,7 @@ public abstract class SimpleImGuiWindowBase : ImGuiDrawableBase
     public abstract string Name { get; }
 
     /// <inheritdoc />
-    protected sealed override void OnDraw()
+    public sealed override void Draw()
     {
         ImGui.SetNextWindowSize(new Vector2(600, 400), ImGuiCond.FirstUseEver);
         ImGui.Begin(Name, ref _isVisible);
