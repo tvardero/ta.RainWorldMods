@@ -34,6 +34,20 @@ Steps:
     - `dotnet cake --target=CopyModToRW --configuration=Release` - same, but in `Release` configuration.
     - `dotnet cake` - same as `dotnet cake --target=CopyModToRW`.
 
+## FAQ:
+
+> I'm playing on macOs / Linux and not a single mod loaded and no mods work!
+
+Proton configures Rain World to run perfect, however misses one configuration to support modding. 
+Rain World uses BepInEx library to load mods, and BepInEx requires `winhttp` library to be loaded. 
+But fresh Rain World installation does not have this library selected in wineconfig.
+See these instructions on how to add it: https://docs.bepinex.dev/articles/advanced/proton_wine.html.
+
+For ease of modifying wineconfig, I recommend installing `protontricks` (with dependencies) first.
+After adding `winhttp` library, be sure to **UNLOAD ALL** mods in Remix menu, restart, and then load them back again.
+
+---
+
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
