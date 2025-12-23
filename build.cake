@@ -5,7 +5,6 @@ var rainWorldPath = Argument("rainWorldPath", string.Empty);
 var projectName = "tvardero.DearDevTools";
 var projectPath = $"./src/{projectName}";
 var outputPath = $"./dist/{projectName}";
-var pluginsPath = $"{outputPath}/plugins";
 
 Task("Clean")
     .Does(() =>
@@ -16,50 +15,73 @@ Task("Clean")
     {
         CleanDirectory(outputPath);
     }
+    
+    Information($"Cleaned project output");
 });
 
 Task("PackMod")
     .IsDependentOn("Clean")
     .Does(() =>
 {
+    var pluginsPath = $"{outputPath}/plugins";
+
     DotNetPublish(projectPath, new DotNetPublishSettings
     {
         Configuration = configuration,
         OutputDirectory = pluginsPath
     });
+    Information($"Built and copied .dll files");
 
     var modinfoSource = $"{projectPath}/modinfo.json";
     var modinfoTarget = $"{outputPath}/modinfo.json";
 
-    var thumbnailSource = $"{projectPath}/thumbnail.png";
-    var thumbnailTarget = $"{outputPath}/thumbnail.png";
-
     if (FileExists(modinfoSource))
     {
         CopyFile(modinfoSource, modinfoTarget);
+        Information($"Copied modinfo.json");
     }
     else
     {
         Warning($"File not found: {modinfoSource}");
     }
 
+    var thumbnailSource = $"{projectPath}/thumbnail.png";
+    var thumbnailTarget = $"{outputPath}/thumbnail.png";
+
     if (FileExists(thumbnailSource))
     {
         CopyFile(thumbnailSource, thumbnailTarget);
+        Information($"Copied thumbnail.png");
     }
     else
     {
         Warning($"File not found: {thumbnailSource}");
     }
+    
+    Information($"Done packing the mod");
 });
 
 Task("CopyModToRW")
     .IsDependentOn("PackMod")
     .Does(() =>
 {
-    if (string.IsNullOrEmpty(rainWorldPath)) rainWorldPath = EnvironmentVariable("RAINWORLD_PATH");
-    if (string.IsNullOrEmpty(rainWorldPath)) rainWorldPath = ReadEnvFile("RAINWORLD_PATH");
-    if (string.IsNullOrEmpty(rainWorldPath)) throw new Exception("Rain World installation path is required. Specify it with --rainWorldPath argument, RAINWORLD_PATH environment variable or in .env or .env.local file.");
+    rainWorldPath = rainWorldPath?.Trim();
+        
+    if (string.IsNullOrEmpty(rainWorldPath)) 
+    {
+        rainWorldPath = EnvironmentVariable("RAINWORLD_PATH");
+        rainWorldPath = rainWorldPath?.Trim();
+    }
+    
+    if (string.IsNullOrEmpty(rainWorldPath)) 
+    {
+        rainWorldPath = ReadEnvFile("RAINWORLD_PATH");
+        rainWorldPath = rainWorldPath?.Trim();        
+    }
+    
+    if (string.IsNullOrEmpty(rainWorldPath)) 
+        throw new Exception("Rain World installation path is required. Specify it with --rainWorldPath argument, "
+                          + "RAINWORLD_PATH environment variable or with .env or .env.local file.");
 
     var rainWorldModsPath = $"{rainWorldPath}/RainWorld_Data/StreamingAssets/mods";
     var modPath = $"{rainWorldModsPath}/{projectName}";
@@ -74,14 +96,7 @@ Task("CopyModToRW")
     }
 
     CopyDirectory(outputPath, modPath);
-    Information($"Copied to {modPath}");
-});
-
-Task("CopyModToRW-Release")
-    .Does(() =>
-{
-    configuration = "Release";
-    RunTarget("CopyModToRW");
+    Information($"Copied packed mod to {modPath}");
 });
 
 Task("Default")
@@ -108,6 +123,7 @@ string ReadEnvFile(string key)
                 if (parts.Length == 2 && parts[0].Trim() == key)
                 {
                     var value = parts[1].Trim();
+                    
                     // Remove surrounding quotes if present
                     if ((value.StartsWith("\"") && value.EndsWith("\"")) ||
                         (value.StartsWith("'") && value.EndsWith("'")))
