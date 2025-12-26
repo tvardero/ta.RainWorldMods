@@ -89,7 +89,7 @@ public class MainMenuBar : ImGuiDrawableBase
 
         if (ImGui.MenuItem("Report issue / suggest an idea")) Application.OpenURL("https://github.com/tvardero/tvardero.DearDevTools/issues");
 
-        if (ImGui.MenuItem("Support development")) Application.OpenURL("https://ko-fi.com/tvardero");
+        if (ImGui.MenuItem("Support development (ko-fi)")) Application.OpenURL("https://ko-fi.com/tvardero");
 
         ImGui.Separator();
 
@@ -123,7 +123,7 @@ public class MainMenuBar : ImGuiDrawableBase
 
     private void MenuTools()
     {
-        ImGui.MenuItem("Cycle control");
+        ImGui.MenuItem("Weather control");
         ImGui.MenuItem("Creatures control");
         ImGui.MenuItem("Kill all creatures except slugcat", "Ctrl+K");
 

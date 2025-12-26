@@ -227,18 +227,11 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
         _modImGuiContext = _serviceProvider.GetRequiredService<ModImGuiContext>();
         _menuManager = _serviceProvider.GetRequiredService<MenuManager>();
 
-        ResetMod();
-    }
-
-    private void ResetMod()
-    {
-        Logger.LogInfo("Resetting Dear Dev Tools");
+        _menuManager.CreateMenu<DearDevToolsEnabledOverlay>();
+        _menuManager.CreateMenu<MainMenuBar>();
 
         AreDearDevToolsActive = true; // TODO: true is temporary
         IsMainUiVisible = false;
-
-        _menuManager.CreateMenu<DearDevToolsEnabledOverlay>();
-        _menuManager.CreateMenu<MainMenuBar>();
     }
 
     private void ConfigureDefaults(ServiceCollection serviceCollection)
@@ -265,6 +258,6 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
         }
 
         _instance = this;
-        Logger.LogInfo("Initialization complete;");
+        Logger.LogInfo("Initialization complete");
     }
 }
