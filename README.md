@@ -59,7 +59,8 @@ reset your wineconfig, re-add `winhttp` library if needed (see previous question
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
-For imported third-party components - see the [THIRD-PARTY-LICENSES](THIRD-PARTY-LICENSES.md) file for details.
+For imported (inside `thirdparty/` folder) third-party components - see
+the [THIRD-PARTY-LICENSES](THIRD-PARTY-LICENSES.md) file for details.
 
 ## Support development
 
