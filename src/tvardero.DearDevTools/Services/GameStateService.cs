@@ -1,4 +1,5 @@
 ﻿using Menu;
+using Microsoft.Extensions.Logging;
 using MoreSlugcats;
 using RWCustom;
 
@@ -6,9 +7,15 @@ namespace tvardero.DearDevTools.Services;
 
 public class GameStateService : IDisposable
 {
-    public GameStateService()
+    private readonly ILogger<GameStateService> _logger;
+
+    public GameStateService(ILogger<GameStateService> logger)
     {
+        _logger = logger;
+        
         On.ProcessManager.PostSwitchMainProcess += PostSwitchProcess;
+        _logger.LogDebug("Registered On.ProcessManager.PostSwitchMainProcess hook");
+        
         RefreshValuesFromGame();
     }
 
@@ -24,11 +31,15 @@ public class GameStateService : IDisposable
     public void Dispose()
     {
         On.ProcessManager.PostSwitchMainProcess -= PostSwitchProcess;
+        _logger.LogDebug("Unregistered On.ProcessManager.PostSwitchMainProcess hook");
+        
         GC.SuppressFinalize(this);
     }
 
     public void RefreshValuesFromGame()
     {
+        _logger.LogDebug("Refreshing game state values from game");
+        
         RainWorld? rw = Custom.rainWorld;
         CurrentProcess = rw.processManager.currentMainLoop;
 

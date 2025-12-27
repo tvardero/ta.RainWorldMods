@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using ImGuiNET;
 using Microsoft.Extensions.Logging;
 
 namespace tvardero.DearDevTools.Components;
@@ -33,7 +34,7 @@ public abstract class ImGuiWindowWithLeftPanelBase : ImGuiWindowBase
 
         if (!IsLeftPanelCollapsed)
         {
-            ImGui.BeginChild("Left pane", new Vector2(150, 0), ImGuiChildFlags.Borders | ImGuiChildFlags.ResizeX);
+            ImGui.BeginChild("Left pane", new Vector2(150, 0), ImGuiChildFlags.Border | ImGuiChildFlags.ResizeX);
             OnDrawLeftPanel();
             ImGui.EndChild();
 

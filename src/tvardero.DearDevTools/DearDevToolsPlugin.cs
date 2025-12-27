@@ -16,7 +16,7 @@ namespace tvardero.DearDevTools;
 [BepInPlugin("tvardero.DearDevTools", "Dear Dev Tools", "0.0.7")]
 [BepInDependency("rwimgui")]
 [PublicAPI]
-public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevToolsPlugin
+public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable
 {
     private static DearDevToolsPlugin? _instance;
     private static bool _skipOnModsInit;
@@ -24,12 +24,13 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
     private static readonly List<Action<IServiceProvider>> _configureServiceProvider = [];
     private MenuManager _menuManager = null!;
     private ModImGuiContext _modImGuiContext = null!;
+    private EndEscaperService _endEscaperService = null!;
 
     private ServiceProvider _serviceProvider = null!;
 
     public DearDevToolsPlugin()
     {
-        Logger = new BepInExLoggingProvider.BepInExLogger(() => LogLevel.Trace, base.Logger);
+        Logger = new BepInExLogger(() => LogLevel.Trace, base.Logger);
     }
 
     /// <summary>
@@ -53,8 +54,12 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
         // todo: make configurable
 
         bool ctrlPressed = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+        bool escPressed = Input.GetKey(KeyCode.Escape);
+        bool endPressed = Input.GetKey(KeyCode.End);
         bool hPressed = Input.GetKeyDown(KeyCode.H);
         bool oPressed = Input.GetKeyDown(KeyCode.O);
+
+        if (escPressed && endPressed) _endEscaperService.EscapeTheEnd();
 
         if (ctrlPressed && oPressed)
         {
@@ -234,7 +239,8 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
 
         _modImGuiContext = _serviceProvider.GetRequiredService<ModImGuiContext>();
         _menuManager = _serviceProvider.GetRequiredService<MenuManager>();
-
+        _endEscaperService = _serviceProvider.GetRequiredService<EndEscaperService>();
+        
         _menuManager.CreateNew<DearDevToolsEnabledOverlay>();
         _menuManager.CreateNew<MainMenuBar>();
 
@@ -251,12 +257,15 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
 #endif
 
         serviceCollection.AddLogging(c => c.AddProvider(new BepInExLoggingProvider(minimumLogLevel)));
-        serviceCollection.AddSingleton<IDearDevToolsPlugin>(this);
+        serviceCollection.AddSingleton(this);
         serviceCollection.AddSingleton<ModImGuiContext>();
         serviceCollection.AddSingleton<MenuManager>();
         serviceCollection.AddSingleton<DearDevToolsEnabledOverlay>();
         serviceCollection.AddSingleton<MainMenuBar>();
         serviceCollection.AddSingleton<GameStateService>();
+        serviceCollection.AddSingleton<EndEscaperService>();
+        serviceCollection.AddSingleton<HelpMenu>();
+        serviceCollection.AddSingleton<WhatsNewMenu>();
     }
 
     private void Initialize()

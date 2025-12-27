@@ -5,8 +5,7 @@ using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.OpenGL.Extensions.ImGui;
 using Silk.NET.Windowing;
-using tvardero.DearDevTools.Components;
-using tvardero.DearDevTools.Menus;
+using tvardero.MenuTests;
 
 WindowOptions windowOptions = WindowOptions.Default with
 {
@@ -23,7 +22,7 @@ ImGuiIOPtr io = 0;
 CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("uk");
 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("uk");
 
-ImGuiDrawableBase testSubject = new ModEditor();
+var testSubject = new TestSubject();
 
 window.Load += OnLoad;
 window.FramebufferResize += size => gl.Viewport(size);

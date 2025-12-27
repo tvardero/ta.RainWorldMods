@@ -1,4 +1,5 @@
-﻿using RWIMGUI.API;
+﻿using Microsoft.Extensions.Logging;
+using RWIMGUI.API;
 using tvardero.DearDevTools.Components;
 
 namespace tvardero.DearDevTools.Services;
@@ -6,13 +7,15 @@ namespace tvardero.DearDevTools.Services;
 internal sealed class ModImGuiContext : IMGUIContext, IDisposable
 {
     private readonly List<ImGuiDrawableBase> _renderList = [];
-    private readonly IDearDevToolsPlugin _plugin;
+    private readonly DearDevToolsPlugin _plugin;
+    private readonly ILogger<ModImGuiContext> _logger;
     private ImGuiDrawableBase[]? _renderListSnapshot;
     private bool _disposed;
 
-    public ModImGuiContext(IDearDevToolsPlugin plugin)
+    public ModImGuiContext(DearDevToolsPlugin plugin, ILogger<ModImGuiContext> logger)
     {
         _plugin = plugin;
+        _logger = logger;
         RenderList = _renderList.AsReadOnly();
     }
 
@@ -22,13 +25,18 @@ internal sealed class ModImGuiContext : IMGUIContext, IDisposable
 
     public void Activate()
     {
-        if (!IsActive) ImGUIAPI.SwitchContext(this);
+        if (!IsActive)
+        {
+            _logger.LogDebug($"Activating {nameof(ModImGuiContext)}");
+            ImGUIAPI.SwitchContext(this);
+        }
     }
 
     public void AddDrawable(ImGuiDrawableBase drawable)
     {
         if (_renderList.Contains(drawable)) return;
 
+        _logger.LogDebug("Adding drawable {Drawable} to render list", drawable);
         _renderList.Add(drawable);
         _renderListSnapshot = null;
     }
@@ -48,12 +56,18 @@ internal sealed class ModImGuiContext : IMGUIContext, IDisposable
 
     public void Deactivate()
     {
-        if (IsActive) ImGUIAPI.SwitchContext(null);
+        if (IsActive)
+        {
+            _logger.LogDebug($"Deactivating {nameof(ModImGuiContext)}");
+            ImGUIAPI.SwitchContext(null);
+        }
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
+        _logger.LogDebug($"Disposing {nameof(ModImGuiContext)}");
+
         Deactivate();
 
         _disposed = true;
@@ -63,7 +77,11 @@ internal sealed class ModImGuiContext : IMGUIContext, IDisposable
 
     public void RemoveDrawable(ImGuiDrawableBase drawable)
     {
-        if (_renderList.Remove(drawable)) _renderListSnapshot = null;
+        if (!_renderList.Contains(drawable)) return;
+
+        _logger.LogDebug("Removing drawable {Drawable} from render list", drawable);
+        _renderList.Remove(drawable);
+        _renderListSnapshot = null;
     }
 
     /// <inheritdoc />
@@ -79,7 +97,15 @@ internal sealed class ModImGuiContext : IMGUIContext, IDisposable
             .Where(drawable => drawable.IsVisible)
             .Where(drawable => isMainUiVisible || !drawable.RequiresMainUiVisible);
 
-        foreach (ImGuiDrawableBase drawable in toDraw) { drawable.Draw(); }
+        foreach (ImGuiDrawableBase drawable in toDraw)
+        {
+            try { drawable.Draw(); }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Drawable {Drawable} threw an exception during rendering, removing drawable from render list", drawable);
+                _renderList.Remove(drawable);
+            }
+        }
     }
 
     public void SanitizeRenderList()

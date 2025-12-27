@@ -6,10 +6,10 @@ namespace tvardero.DearDevTools.Menus;
 
 public class DearDevToolsEnabledOverlay : ImGuiDrawableBase
 {
-    private readonly IDearDevToolsPlugin _plugin;
+    private readonly DearDevToolsPlugin _plugin;
     private readonly GameStateService _gameStateService;
 
-    public DearDevToolsEnabledOverlay(IDearDevToolsPlugin plugin, GameStateService gameStateService)
+    public DearDevToolsEnabledOverlay(DearDevToolsPlugin plugin, GameStateService gameStateService)
     {
         _plugin = plugin;
         _gameStateService = gameStateService;

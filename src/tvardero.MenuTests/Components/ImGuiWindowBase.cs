@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using ImGuiNET;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -72,12 +73,6 @@ public abstract class ImGuiWindowBase : ImGuiDrawableBase
     {
         _isOpen = false;
         if (_disposeOnClose) Dispose();
-    }
-
-    public virtual void Reopen()
-    {
-        _isOpen = true;
-        IsDisposed = false;
     }
 
     public void Focus()

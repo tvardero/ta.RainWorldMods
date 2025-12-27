@@ -8,10 +8,12 @@ namespace tvardero.DearDevTools.Menus;
 public class MainMenuBar : ImGuiDrawableBase
 {
     private readonly MenuManager _menuManager;
+    private readonly EndEscaperService _endEscaperService;
 
-    public MainMenuBar(MenuManager menuManager)
+    public MainMenuBar(MenuManager menuManager, EndEscaperService endEscaperService)
     {
         _menuManager = menuManager;
+        _endEscaperService = endEscaperService;
     }
 
     /// <inheritdoc />
@@ -70,11 +72,6 @@ public class MainMenuBar : ImGuiDrawableBase
         }
     }
 
-    private static void EscapeTheEnd()
-    {
-        Utils.ForceCrash(ForcedCrashCategory.Abort);
-    }
-
     private static void MenuBarView()
     {
         ImGui.MenuItem("RW Debug");
@@ -108,7 +105,7 @@ public class MainMenuBar : ImGuiDrawableBase
 
         ImGui.Separator();
 
-        if (ImGui.MenuItem("Escape the end", "Esc + End")) EscapeTheEnd();
+        if (ImGui.MenuItem("Escape the end", "Esc + End")) _endEscaperService.EscapeTheEnd();
     }
 
     private void MenuBarMenu()
@@ -154,8 +151,6 @@ public class MainMenuBar : ImGuiDrawableBase
 
     private void ProcessShortcuts()
     {
-        if (ImGui.Shortcut(ImGuiKey.F1)) _menuManager.EnsureShown<HelpMenu>();
-
-        if (ImGui.Shortcut(ImGuiKey.Escape) && ImGui.Shortcut(ImGuiKey.End)) EscapeTheEnd();
+        if (ImGui.Shortcut(ImGuiKey.F1, ImGuiInputFlags.RouteGlobal)) _menuManager.EnsureShown<HelpMenu>();
     }
 }
