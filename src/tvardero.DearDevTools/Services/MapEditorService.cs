@@ -1,6 +1,3 @@
 ﻿namespace tvardero.DearDevTools.Services;
 
-public class MapEditorService
-{
-
-}
+public class MapEditorService { }

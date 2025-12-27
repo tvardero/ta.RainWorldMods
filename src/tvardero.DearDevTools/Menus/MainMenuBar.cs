@@ -26,41 +26,43 @@ public class MainMenuBar : ImGuiDrawableBase
     /// <inheritdoc />
     protected internal override void Draw()
     {
+        ProcessShortcuts();
+
         if (ImGui.BeginMainMenuBar())
         {
             if (ImGui.BeginMenu("Menu"))
             {
-                MenuMenu();
+                MenuBarMenu();
                 ImGui.EndMenu();
             }
 
             if (ImGui.BeginMenu("Edit"))
             {
-                MenuEdit();
+                MenuBarEdit();
                 ImGui.EndMenu();
             }
 
             if (ImGui.BeginMenu("View"))
             {
-                MenuView();
+                MenuBarView();
                 ImGui.EndMenu();
             }
 
             if (ImGui.BeginMenu("Navigate"))
             {
-                MenuNavigate();
+                MenuBarNavigate();
                 ImGui.EndMenu();
             }
 
             if (ImGui.BeginMenu("Tools"))
             {
-                MenuTools();
+                MenuBarTools();
                 ImGui.EndMenu();
             }
 
             if (ImGui.BeginMenu("Help"))
             {
-                MenuHelp();
+                MenuBarHelp();
                 ImGui.EndMenu();
             }
 
@@ -68,7 +70,18 @@ public class MainMenuBar : ImGuiDrawableBase
         }
     }
 
-    private void MenuEdit()
+    private static void EscapeTheEnd()
+    {
+        Utils.ForceCrash(ForcedCrashCategory.Abort);
+    }
+
+    private static void MenuBarView()
+    {
+        ImGui.MenuItem("RW Debug");
+        ImGui.MenuItem("ImGui Debug");
+    }
+
+    private void MenuBarEdit()
     {
         ImGui.MenuItem("Undo", "Ctrl+Z");
         ImGui.MenuItem("Redo", "Ctrl+Y");
@@ -79,11 +92,13 @@ public class MainMenuBar : ImGuiDrawableBase
         ImGui.MenuItem("Clear history");
     }
 
-    private void MenuHelp()
+    private void MenuBarHelp()
     {
-        ImGui.MenuItem("How to use Dear Dev Tools?", "F1");
-        ImGui.MenuItem("Whats new?");
-        ImGui.MenuItem("Steam Workshop page");
+        if (ImGui.MenuItem("How to use Dear Dev Tools?", "F1")) _menuManager.EnsureShown<HelpMenu>();
+
+        if (ImGui.MenuItem("Whats new?")) _menuManager.EnsureShown<WhatsNewMenu>();
+
+        if (ImGui.MenuItem("Steam Workshop page")) Application.OpenURL("https://steamcommunity.com/sharedfiles/filedetails/?id=3417372413");
 
         if (ImGui.MenuItem("GitHub page")) Application.OpenURL("https://github.com/tvardero/tvardero.DearDevTools");
 
@@ -93,10 +108,10 @@ public class MainMenuBar : ImGuiDrawableBase
 
         ImGui.Separator();
 
-        if (ImGui.MenuItem("Escape the end", "Esc + End")) Utils.ForceCrash(ForcedCrashCategory.Abort);
+        if (ImGui.MenuItem("Escape the end", "Esc + End")) EscapeTheEnd();
     }
 
-    private void MenuMenu()
+    private void MenuBarMenu()
     {
         ImGui.MenuItem("Mod editor");
         ImGui.MenuItem("Region editor");
@@ -109,7 +124,7 @@ public class MainMenuBar : ImGuiDrawableBase
         ImGui.MenuItem("Settings");
     }
 
-    private void MenuNavigate()
+    private void MenuBarNavigate()
     {
         ImGui.MenuItem("Warp to region/room");
         ImGui.MenuItem("Warp back");
@@ -121,7 +136,7 @@ public class MainMenuBar : ImGuiDrawableBase
         ImGui.MenuItem("Main menu");
     }
 
-    private void MenuTools()
+    private void MenuBarTools()
     {
         ImGui.MenuItem("Weather control");
         ImGui.MenuItem("Creatures control");
@@ -137,9 +152,10 @@ public class MainMenuBar : ImGuiDrawableBase
         ImGui.MenuItem("Room triggers");
     }
 
-    private static void MenuView()
+    private void ProcessShortcuts()
     {
-        ImGui.MenuItem("RW Debug");
-        ImGui.MenuItem("ImGui Debug");
+        if (ImGui.Shortcut(ImGuiKey.F1)) _menuManager.EnsureShown<HelpMenu>();
+
+        if (ImGui.Shortcut(ImGuiKey.Escape) && ImGui.Shortcut(ImGuiKey.End)) EscapeTheEnd();
     }
 }

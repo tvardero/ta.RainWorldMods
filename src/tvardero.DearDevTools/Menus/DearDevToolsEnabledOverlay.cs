@@ -28,9 +28,9 @@ public class DearDevToolsEnabledOverlay : ImGuiDrawableBase
     protected internal override void Draw()
     {
         const float _PADDING = 10f;
-        var viewport = ImGui.GetMainViewport();
-        var workPos = viewport.WorkPos;
-        var workSize = viewport.WorkSize;
+        ImGuiViewportPtr viewport = ImGui.GetMainViewport();
+        Vector2 workPos = viewport.WorkPos;
+        Vector2 workSize = viewport.WorkSize;
         var anchor = new Vector2(1, 1);
         var pos = new Vector2(workPos.X + workSize.X - _PADDING, workPos.Y + workSize.Y - _PADDING);
         ImGui.SetNextWindowPos(pos, ImGuiCond.Always, anchor);
@@ -49,7 +49,7 @@ public class DearDevToolsEnabledOverlay : ImGuiDrawableBase
 
         ImGui.Separator();
         ImGui.Text(_gameStateService.CurrentProcess?.ID.ToString() ?? "Null");
-        
+
         ImGui.End();
     }
 }

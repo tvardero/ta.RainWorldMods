@@ -1,9 +1,12 @@
 ﻿using BepInEx;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using tvardero.DearDevTools.Logging;
 using tvardero.DearDevTools.Menus;
 using tvardero.DearDevTools.Services;
 using UnityEngine;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace tvardero.DearDevTools;
 
@@ -19,10 +22,15 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
     private static bool _skipOnModsInit;
     private static readonly List<Action<IServiceCollection>> _configureServiceCollection = [];
     private static readonly List<Action<IServiceProvider>> _configureServiceProvider = [];
+    private MenuManager _menuManager = null!;
+    private ModImGuiContext _modImGuiContext = null!;
 
     private ServiceProvider _serviceProvider = null!;
-    private ModImGuiContext _modImGuiContext = null!;
-    private MenuManager _menuManager = null!;
+
+    public DearDevToolsPlugin()
+    {
+        Logger = new BepInExLoggingProvider.BepInExLogger(() => LogLevel.Trace, base.Logger);
+    }
 
     /// <summary>
     /// Singleton instance of fully initialized Dear Dev Tools mod.
@@ -34,6 +42,53 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
     /// Is Dear Dev Tools mod initialized.
     /// </summary>
     public static bool IsInitialized => _instance != null;
+
+    public new ILogger Logger { get; }
+
+    [UsedImplicitly]
+    private void Update()
+    {
+        if (_instance != this) return;
+
+        // todo: make configurable
+
+        bool ctrlPressed = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+        bool hPressed = Input.GetKeyDown(KeyCode.H);
+        bool oPressed = Input.GetKeyDown(KeyCode.O);
+
+        if (ctrlPressed && oPressed)
+        {
+            AreDearDevToolsActive = !AreDearDevToolsActive;
+            Logger.LogDebug("Dear Dev Tools active: {AreDearDevToolsActive}", AreDearDevToolsActive);
+        }
+
+        if (AreDearDevToolsActive && ctrlPressed && hPressed)
+        {
+            IsMainUiVisible = !IsMainUiVisible;
+            Logger.LogDebug("Dear Dev Tools main UI visible: {IsMainUiVisible}", IsMainUiVisible);
+        }
+    }
+
+    [UsedImplicitly]
+    private void OnEnable()
+    {
+        Logger.LogInformation("OnEnable called, registering initialization callback");
+
+        if (_skipOnModsInit) Initialize();
+        else On.RainWorld.OnModsInit += OnModsInit;
+    }
+
+    [UsedImplicitly]
+    private void OnDisable()
+    {
+        Logger.LogInformation("OnDisable called, deinitializing mod instance");
+
+        if (_instance == this) _instance = null;
+
+        On.RainWorld.OnModsInit -= OnModsInit;
+
+        _modImGuiContext.Dispose();
+    }
 
     /// <summary> Main UI visible. Includes main menu bar, room info panel, room settings panel, and others by default. </summary>
     /// <remarks> Settings this to true will set <see cref="AreDearDevToolsActive" /> to true as well automatically. </remarks>
@@ -81,64 +136,17 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
     /// </summary>
     /// <remarks>
     /// Do not hold on value of this property during mod initialization.
-    /// Service provider might be rebuilt multiple times by other dependent mods by call to <see cref="RebuildServiceProvider"/>.<br/>
-    /// Use <see cref="ConfigureServiceProvider"/> as a callback that is executed each time <see cref="RebuildServiceProvider"/> is called.
+    /// Service provider might be rebuilt multiple times by other dependent mods by call to <see cref="RebuildServiceProvider" />.<br />
+    /// Use <see cref="ConfigureServiceProvider" /> as a callback that is executed each time <see cref="RebuildServiceProvider" /> is called.
     /// </remarks>
     public IServiceProvider ServiceProvider => _serviceProvider;
-
-    [UsedImplicitly]
-    private void Update()
-    {
-        if (_instance != this) return;
-
-        // todo: make configurable
-
-        bool ctrlPressed = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-        bool hPressed = Input.GetKeyDown(KeyCode.H);
-        bool oPressed = Input.GetKeyDown(KeyCode.O);
-
-        if (ctrlPressed && oPressed)
-        {
-            bool willBeActive = !AreDearDevToolsActive;
-            Logger.LogInfo(willBeActive ? "Activating Dear Dev Tools" : "Deactivating Dear Dev Tools");
-            AreDearDevToolsActive = willBeActive;
-        }
-
-        if (AreDearDevToolsActive && ctrlPressed && hPressed)
-        {
-            bool willBeVisible = !IsMainUiVisible;
-            Logger.LogInfo(willBeVisible ? "Showing main UI" : "Hiding main UI");
-            IsMainUiVisible = willBeVisible;
-        }
-    }
-
-    [UsedImplicitly]
-    private void OnEnable()
-    {
-        Logger.LogInfo("OnEnable called, registering initialization callback");
-
-        if (_skipOnModsInit) Initialize();
-        else On.RainWorld.OnModsInit += OnModsInit;
-    }
-
-    [UsedImplicitly]
-    private void OnDisable()
-    {
-        Logger.LogInfo("OnDisable called, deinitializing mod instance");
-
-        if (_instance == this) _instance = null;
-
-        On.RainWorld.OnModsInit -= OnModsInit;
-
-        _modImGuiContext.Dispose();
-    }
 
     /// <summary>
     /// Disposes (destroys) current mod instance.
     /// </summary>
     public void Dispose()
     {
-        Logger.LogInfo("Dispose called, deinitializing mod instance");
+        Logger.LogInformation("Dispose called, deinitializing mod instance");
 
         if (_instance == this) _instance = null;
 
@@ -155,15 +163,15 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
     }
 
     /// <summary>
-    /// Register or override services for service provider.<br/>
-    /// After registering all services, call <see cref="RebuildServiceProvider"/> to rebuild service provider.
+    /// Register or override services for service provider.<br />
+    /// After registering all services, call <see cref="RebuildServiceProvider" /> to rebuild service provider.
     /// </summary>
     /// <remarks>
     /// Dear Dev Tools does not use Scoped lifetime, it uses only Singleton and Transient.
     /// If you want to use Scoped lifetime - go ahead, but note that you need to handle scopes yourself.
     /// </remarks>
-    /// <param name="configure">Configure action.</param>
-    /// <exception cref="ArgumentNullException">Configure action is null.</exception>
+    /// <param name="configure"> Configure action. </param>
+    /// <exception cref="ArgumentNullException"> Configure action is null. </exception>
     public static void ConfigureServiceCollection(Action<IServiceCollection> configure)
     {
         if (configure == null) throw new ArgumentNullException(nameof(configure));
@@ -172,11 +180,11 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
     }
 
     /// <summary>
-    /// Register callback to resolve services from rebuilt service provider and additionally configure them.<br/>
-    /// Called everytime service provider is rebuilt by <see cref="RebuildServiceProvider"/> method.
+    /// Register callback to resolve services from rebuilt service provider and additionally configure them.<br />
+    /// Called everytime service provider is rebuilt by <see cref="RebuildServiceProvider" /> method.
     /// </summary>
-    /// <param name="configure">Configure action.</param>
-    /// <exception cref="ArgumentNullException">Configure action is null.</exception>
+    /// <param name="configure"> Configure action. </param>
+    /// <exception cref="ArgumentNullException"> Configure action is null. </exception>
     public static void ConfigureServiceProvider(Action<IServiceProvider> configure)
     {
         if (configure == null) throw new ArgumentNullException(nameof(configure));
@@ -189,7 +197,7 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
     /// </summary>
     public void RebuildServiceProvider()
     {
-        Logger.LogInfo("Rebuilding service provider");
+        Logger.LogInformation("Rebuilding service provider");
 
         // NOTE: multiple downstream dependents might call this method multiple times 
 
@@ -198,7 +206,7 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
         foreach (Action<IServiceCollection> configure in _configureServiceCollection)
         {
             try { configure(serviceCollection); }
-            catch (Exception e) { Logger.LogError($"Error while executing service collection configure action (pre-build)\n{e}"); }
+            catch (Exception e) { Logger.LogError(e, "Error while executing service collection configure action (pre-build)"); }
         }
 
         ConfigureDefaults(serviceCollection);
@@ -210,14 +218,14 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
         }
         catch (Exception e)
         {
-            Logger.LogError($"Error while building service provider, did you register all necessary services?\n{e}");
+            Logger.LogError(e, "Error while building service provider, did you register all necessary services?");
             throw;
         }
 
         foreach (Action<IServiceProvider> configure in _configureServiceProvider)
         {
             try { configure(serviceProvider); }
-            catch (Exception e) { Logger.LogError($"Error while executing service provider configure action (post-build)\n{e}"); }
+            catch (Exception e) { Logger.LogError(e, "Error while executing service provider configure action (post-build)"); }
         }
 
         // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
@@ -227,8 +235,8 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
         _modImGuiContext = _serviceProvider.GetRequiredService<ModImGuiContext>();
         _menuManager = _serviceProvider.GetRequiredService<MenuManager>();
 
-        _menuManager.CreateMenu<DearDevToolsEnabledOverlay>();
-        _menuManager.CreateMenu<MainMenuBar>();
+        _menuManager.CreateNew<DearDevToolsEnabledOverlay>();
+        _menuManager.CreateNew<MainMenuBar>();
 
         AreDearDevToolsActive = true; // TODO: true is temporary
         IsMainUiVisible = false;
@@ -236,6 +244,13 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
 
     private void ConfigureDefaults(ServiceCollection serviceCollection)
     {
+#if DEBUG
+        var minimumLogLevel = LogLevel.Trace;
+#else
+        var minimumLogLevel = LogLevel.Information;
+#endif
+
+        serviceCollection.AddLogging(c => c.AddProvider(new BepInExLoggingProvider(minimumLogLevel)));
         serviceCollection.AddSingleton<IDearDevToolsPlugin>(this);
         serviceCollection.AddSingleton<ModImGuiContext>();
         serviceCollection.AddSingleton<MenuManager>();
@@ -246,18 +261,18 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable, IDearDevT
 
     private void Initialize()
     {
-        Logger.LogInfo("Initializing mod instance");
+        Logger.LogInformation("Initializing mod instance");
 
         if (_instance == this) return;
 
         try { RebuildServiceProvider(); }
         catch (Exception e)
         {
-            Logger.LogFatal($"Fatal error during Dear Dev Tool initialization\n{e}");
+            Logger.LogCritical(e, "Fatal error during Dear Dev Tool initialization");
             throw;
         }
 
         _instance = this;
-        Logger.LogInfo("Initialization complete");
+        Logger.LogInformation("Initialization complete");
     }
 }

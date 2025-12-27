@@ -3,19 +3,15 @@
 namespace tvardero.DearDevTools.Menus;
 
 // TODO
-public class ModEditor : SimpleWindowWithLeftPanelBase
+public class ModEditor : ImGuiWindowWithLeftPanelBase
 {
-    private string? _selectedModId;
-
     private readonly SortedSet<ModInfo> _coreMods = new(Comparer<ModInfo>.Create((x, y) => string.CompareOrdinal(x.Id, y.Id)));
     private readonly SortedSet<ModInfo> _userMods = new(Comparer<ModInfo>.Create((x, y) => string.CompareOrdinal(x.Id, y.Id)));
     private readonly SortedSet<ModInfo> _steamWorkshopMods = new(Comparer<ModInfo>.Create((x, y) => string.CompareOrdinal(x.Id, y.Id)));
+    private string? _selectedModId;
 
     /// <inheritdoc />
-    public override string Name => "Mod Editor";
-
-    /// <inheritdoc />
-    public ModEditor()
+    public ModEditor() : base("Mod Editor")
     {
         ReloadList();
     }
@@ -62,7 +58,7 @@ public class ModEditor : SimpleWindowWithLeftPanelBase
 
         void ListMods(IEnumerable<ModInfo> mods)
         {
-            foreach (var mod in mods) ImGui.Selectable(mod.Name + "##" + mod.Id, mod.Id == _selectedModId);
+            foreach (ModInfo? mod in mods) { ImGui.Selectable(mod.Name + "##" + mod.Id, mod.Id == _selectedModId); }
         }
     }
 

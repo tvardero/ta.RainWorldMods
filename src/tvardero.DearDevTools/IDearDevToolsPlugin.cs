@@ -20,10 +20,11 @@ public interface IDearDevToolsPlugin
     /// </summary>
     /// <remarks>
     /// Do not hold on value of this property during mod initialization.
-    /// Service provider might be rebuilt multiple times by other dependent mods by call to <see cref="DearDevToolsPlugin.RebuildServiceProvider"/>.
-    /// <br/>
-    /// Use <see cref="DearDevToolsPlugin.ConfigureServiceProvider"/> as a callback that is executed each time
-    /// <see cref="DearDevToolsPlugin.RebuildServiceProvider"/> is called.
+    /// Service provider might be rebuilt multiple times by other dependent mods by call to
+    /// <see cref="DearDevToolsPlugin.RebuildServiceProvider" />.
+    /// <br />
+    /// Use <see cref="DearDevToolsPlugin.ConfigureServiceProvider" /> as a callback that is executed each time
+    /// <see cref="DearDevToolsPlugin.RebuildServiceProvider" /> is called.
     /// </remarks>
     IServiceProvider ServiceProvider { get; }
 }

@@ -1,21 +1,19 @@
 ﻿using System.Drawing;
 using System.Globalization;
 using ImGuiNET;
-using Moq;
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.OpenGL.Extensions.ImGui;
 using Silk.NET.Windowing;
-using tvardero.DearDevTools;
 using tvardero.DearDevTools.Components;
 using tvardero.DearDevTools.Menus;
 
-var windowOptions = WindowOptions.Default with
+WindowOptions windowOptions = WindowOptions.Default with
 {
     Title = "Dear Dev Tools tests",
 };
 
-var window = Window.Create(windowOptions);
+IWindow window = Window.Create(windowOptions);
 
 GL gl = null!;
 IInputContext input = null!;
@@ -25,7 +23,7 @@ ImGuiIOPtr io = 0;
 CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("uk");
 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("uk");
 
-ImGuiDrawableBase testSubject = new DearDevToolsEnabledOverlay(Mock.Of<IDearDevToolsPlugin>());
+ImGuiDrawableBase testSubject = new ModEditor();
 
 window.Load += OnLoad;
 window.FramebufferResize += size => gl.Viewport(size);
@@ -53,12 +51,12 @@ void OnLoad()
             {
                 io = ImGui.GetIO();
 
-                var glyphRangeBuilder = ImGuiNative.ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder();
+                ImFontGlyphRangesBuilder* glyphRangeBuilder = ImGuiNative.ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder();
                 var glyphRangeBuilderPtr = new ImFontGlyphRangesBuilderPtr(glyphRangeBuilder);
-                
+
                 glyphRangeBuilderPtr.AddRanges(io.Fonts.GetGlyphRangesCyrillic());
-                
-                glyphRangeBuilderPtr.BuildRanges(out var ranges);
+
+                glyphRangeBuilderPtr.BuildRanges(out ImVector ranges);
                 glyphRangeBuilderPtr.Destroy();
 
                 io.Fonts.AddFontFromFileTTF("FiraCode-Light.ttf", 18f, null, ranges.Data);
@@ -83,7 +81,7 @@ void OnRender(double delta)
 
 void OnUpdate(double delta)
 {
-    var keyboard = input.Keyboards[0];
+    IKeyboard keyboard = input.Keyboards[0];
 
     io.AddKeyEvent(ImGuiKey.ModAlt, keyboard.IsKeyPressed(Key.AltLeft) || keyboard.IsKeyPressed(Key.AltRight));
     io.AddKeyEvent(ImGuiKey.ModSuper, keyboard.IsKeyPressed(Key.SuperLeft) || keyboard.IsKeyPressed(Key.SuperRight));

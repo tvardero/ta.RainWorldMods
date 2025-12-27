@@ -6,6 +6,12 @@ namespace tvardero.DearDevTools.Services;
 
 public class GameStateService : IDisposable
 {
+    public GameStateService()
+    {
+        On.ProcessManager.PostSwitchMainProcess += PostSwitchProcess;
+        RefreshValuesFromGame();
+    }
+
     public bool IsInGame { get; private set; }
 
     public bool IsInSleepOrDeathMenu { get; private set; }
@@ -14,21 +20,16 @@ public class GameStateService : IDisposable
 
     public MainLoopProcess? CurrentProcess { get; private set; }
 
-    public GameStateService()
+    /// <inheritdoc />
+    public void Dispose()
     {
-        On.ProcessManager.PostSwitchMainProcess += PostSwitchProcess;
-        RefreshValuesFromGame();
-    }
-
-    private void PostSwitchProcess(On.ProcessManager.orig_PostSwitchMainProcess orig, ProcessManager self, ProcessManager.ProcessID id)
-    {
-        orig(self, id);
-        RefreshValuesFromGame();
+        On.ProcessManager.PostSwitchMainProcess -= PostSwitchProcess;
+        GC.SuppressFinalize(this);
     }
 
     public void RefreshValuesFromGame()
     {
-        var rw = Custom.rainWorld;
+        RainWorld? rw = Custom.rainWorld;
         CurrentProcess = rw.processManager.currentMainLoop;
 
         IsInGame = CurrentProcess is RainWorldGame;
@@ -37,10 +38,9 @@ public class GameStateService : IDisposable
                                       or InputOptionsMenu or ModdingMenu or OptionsMenu or BackgroundOptionsMenu or ExpeditionMenu or CollectionsMenu;
     }
 
-    /// <inheritdoc />
-    public void Dispose()
+    private void PostSwitchProcess(On.ProcessManager.orig_PostSwitchMainProcess orig, ProcessManager self, ProcessManager.ProcessID id)
     {
-        On.ProcessManager.PostSwitchMainProcess -= PostSwitchProcess;
-        GC.SuppressFinalize(this);
+        orig(self, id);
+        RefreshValuesFromGame();
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
@@ -10,7 +10,7 @@
     <AnalysisMode>Recommended</AnalysisMode>
     <ImplicitUsings>enable</ImplicitUsings>
     <NeutralLanguage>en</NeutralLanguage>
-<!--    <GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+    <!--    <GenerateDocumentationFile>true</GenerateDocumentationFile>-->
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,10 +21,6 @@
     <Reference Include="BepInEx">
       <Private>false</Private>
       <HintPath>..\..\thirdparty\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics">
-      <Private>false</Private>
-      <HintPath>..\..\thirdparty\System.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <Private>false</Private>
@@ -57,7 +53,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1"/>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.1"/>
     <PackageReference Include="PolySharp" Version="1.15.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

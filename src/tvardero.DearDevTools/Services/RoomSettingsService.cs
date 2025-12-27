@@ -1,6 +1,3 @@
 ﻿namespace tvardero.DearDevTools.Services;
 
-public class RoomSettingsService
-{
-    
-}
+public class RoomSettingsService { }

@@ -11,7 +11,8 @@ Prerequsites:
 - [Knowledge of nullable reference types](https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references)
 - [Knowledge of RainWorld modding (video not by me)](https://www.youtube.com/watch?v=JG9cyL5FW90)
 - [Rain World](https://store.steampowered.com/app/312520/Rain_World) installed
-- [ImGUI API mod by Rawra](https://steamcommunity.com/sharedfiles/filedetails/?id=3417372413) installed to Rain World, with dependencies
+- [ImGUI API mod by Rawra](https://steamcommunity.com/sharedfiles/filedetails/?id=3417372413) installed to Rain World,
+  with dependencies
 
 Steps:
 
@@ -20,7 +21,8 @@ Steps:
     - From `Rain World/BepInEx/core/`: `BepInEx.dll`
     - From `Rain World/BepInEx/plugins/`: `HOOKS-Assembly-CSharp.dll`
     - From `Rain World/BepInEx/utils/`: `PUBLIC-Assembly-CSharp.dll`
-    - From `Rain World/RainWorld_Data/Managed/`: `UnityEngine.dll`, `UnityEngine.CoreModule.dll`, `UnityEngine.InputLegacyModule.dll`
+    - From `Rain World/RainWorld_Data/Managed/`: `UnityEngine.dll`, `UnityEngine.CoreModule.dll`,
+      `UnityEngine.InputLegacyModule.dll`
 3. Run `dotnet tool restore` once after you have cloned the repository.
 4. Create `.env.local` file in the root of the repository, see `.env.local.example` as an example.
 5. Run one of the available commands:
@@ -38,8 +40,8 @@ Steps:
 
 > I'm playing on macOs / Linux and not a single mod loaded and no mods work!
 
-Proton configures Rain World to run perfect, however misses one configuration to support modding. 
-Rain World uses BepInEx library to load mods, and BepInEx requires `winhttp` library to be loaded. 
+Proton configures Rain World to run perfect, however misses one configuration to support modding.
+Rain World uses BepInEx library to load mods, and BepInEx requires `winhttp` library to be loaded.
 But fresh Rain World installation does not have this library selected in wineconfig.
 See these instructions on how to add it: https://docs.bepinex.dev/articles/advanced/proton_wine.html.
 
