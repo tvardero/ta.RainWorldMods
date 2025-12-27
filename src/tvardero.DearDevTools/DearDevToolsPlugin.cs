@@ -22,9 +22,9 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable
     private static bool _skipOnModsInit;
     private static readonly List<Action<IServiceCollection>> _configureServiceCollection = [];
     private static readonly List<Action<IServiceProvider>> _configureServiceProvider = [];
+    private EndEscaperService _endEscaperService = null!;
     private MenuManager _menuManager = null!;
     private ModImGuiContext _modImGuiContext = null!;
-    private EndEscaperService _endEscaperService = null!;
 
     private ServiceProvider _serviceProvider = null!;
 
@@ -45,55 +45,6 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable
     public static bool IsInitialized => _instance != null;
 
     public new ILogger Logger { get; }
-
-    [UsedImplicitly]
-    private void Update()
-    {
-        if (_instance != this) return;
-
-        // todo: make configurable
-
-        bool ctrlPressed = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-        bool escPressed = Input.GetKey(KeyCode.Escape);
-        bool endPressed = Input.GetKey(KeyCode.End);
-        bool hPressed = Input.GetKeyDown(KeyCode.H);
-        bool oPressed = Input.GetKeyDown(KeyCode.O);
-
-        if (escPressed && endPressed) _endEscaperService.EscapeTheEnd();
-
-        if (ctrlPressed && oPressed)
-        {
-            AreDearDevToolsActive = !AreDearDevToolsActive;
-            Logger.LogDebug("Dear Dev Tools active: {AreDearDevToolsActive}", AreDearDevToolsActive);
-        }
-
-        if (AreDearDevToolsActive && ctrlPressed && hPressed)
-        {
-            IsMainUiVisible = !IsMainUiVisible;
-            Logger.LogDebug("Dear Dev Tools main UI visible: {IsMainUiVisible}", IsMainUiVisible);
-        }
-    }
-
-    [UsedImplicitly]
-    private void OnEnable()
-    {
-        Logger.LogInformation("OnEnable called, registering initialization callback");
-
-        if (_skipOnModsInit) Initialize();
-        else On.RainWorld.OnModsInit += OnModsInit;
-    }
-
-    [UsedImplicitly]
-    private void OnDisable()
-    {
-        Logger.LogInformation("OnDisable called, deinitializing mod instance");
-
-        if (_instance == this) _instance = null;
-
-        On.RainWorld.OnModsInit -= OnModsInit;
-
-        _modImGuiContext.Dispose();
-    }
 
     /// <summary> Main UI visible. Includes main menu bar, room info panel, room settings panel, and others by default. </summary>
     /// <remarks> Settings this to true will set <see cref="AreDearDevToolsActive" /> to true as well automatically. </remarks>
@@ -145,6 +96,55 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable
     /// Use <see cref="ConfigureServiceProvider" /> as a callback that is executed each time <see cref="RebuildServiceProvider" /> is called.
     /// </remarks>
     public IServiceProvider ServiceProvider => _serviceProvider;
+
+    [UsedImplicitly]
+    private void Update()
+    {
+        if (_instance != this) return;
+
+        // todo: make configurable
+
+        bool ctrlPressed = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+        bool escPressed = Input.GetKey(KeyCode.Escape);
+        bool endPressed = Input.GetKey(KeyCode.End);
+        bool hPressed = Input.GetKeyDown(KeyCode.H);
+        bool oPressed = Input.GetKeyDown(KeyCode.O);
+
+        if (escPressed && endPressed) _endEscaperService.EscapeTheEnd();
+
+        if (ctrlPressed && oPressed)
+        {
+            AreDearDevToolsActive = !AreDearDevToolsActive;
+            Logger.LogDebug("Dear Dev Tools active: {AreDearDevToolsActive}", AreDearDevToolsActive);
+        }
+
+        if (AreDearDevToolsActive && ctrlPressed && hPressed)
+        {
+            IsMainUiVisible = !IsMainUiVisible;
+            Logger.LogDebug("Dear Dev Tools main UI visible: {IsMainUiVisible}", IsMainUiVisible);
+        }
+    }
+
+    [UsedImplicitly]
+    private void OnEnable()
+    {
+        Logger.LogInformation("OnEnable called, registering initialization callback");
+
+        if (_skipOnModsInit) Initialize();
+        else On.RainWorld.OnModsInit += OnModsInit;
+    }
+
+    [UsedImplicitly]
+    private void OnDisable()
+    {
+        Logger.LogInformation("OnDisable called, deinitializing mod instance");
+
+        if (_instance == this) _instance = null;
+
+        On.RainWorld.OnModsInit -= OnModsInit;
+
+        _modImGuiContext.Dispose();
+    }
 
     /// <summary>
     /// Disposes (destroys) current mod instance.
@@ -240,12 +240,17 @@ public sealed class DearDevToolsPlugin : BaseUnityPlugin, IDisposable
         _modImGuiContext = _serviceProvider.GetRequiredService<ModImGuiContext>();
         _menuManager = _serviceProvider.GetRequiredService<MenuManager>();
         _endEscaperService = _serviceProvider.GetRequiredService<EndEscaperService>();
-        
+
         _menuManager.CreateNew<DearDevToolsEnabledOverlay>();
         _menuManager.CreateNew<MainMenuBar>();
 
-        AreDearDevToolsActive = true; // TODO: true is temporary
+#if DEBUG
+        AreDearDevToolsActive = true;
+        IsMainUiVisible = true;
+#else
+        AreDearDevToolsActive = false;
         IsMainUiVisible = false;
+#endif
     }
 
     private void ConfigureDefaults(ServiceCollection serviceCollection)

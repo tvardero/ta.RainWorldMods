@@ -1,7 +1,4 @@
-﻿using System.Numerics;
-using ImGuiNET;
-using Microsoft.Extensions.Logging;
-using tvardero.DearDevTools.Components;
+﻿using tvardero.DearDevTools.Components;
 
 namespace tvardero.MenuTests;
 

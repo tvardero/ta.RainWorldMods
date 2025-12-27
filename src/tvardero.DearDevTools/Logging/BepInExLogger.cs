@@ -9,15 +9,15 @@ internal sealed class BepInExLogger : ILogger, IDisposable
     private readonly Func<LogLevel> _minimumLogLevelEval;
     private readonly ManualLogSource _mls;
 
-    ~BepInExLogger()
-    {
-        _mls.Dispose();
-    }
-
     public BepInExLogger(Func<LogLevel> minimumLogLevelEval, ManualLogSource mls)
     {
         _minimumLogLevelEval = minimumLogLevelEval;
         _mls = mls;
+    }
+
+    ~BepInExLogger()
+    {
+        _mls.Dispose();
     }
 
     /// <inheritdoc />

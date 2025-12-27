@@ -74,17 +74,17 @@ public abstract class ImGuiWindowBase : ImGuiDrawableBase
         if (_disposeOnClose) Dispose();
     }
 
-    public virtual void Reopen()
-    {
-        _isOpen = true;
-        IsDisposed = false;
-    }
-
     public void Focus()
     {
         ThrowIfDisposed();
 
         _stealFocusNextFrame = true;
+    }
+
+    public virtual void Reopen()
+    {
+        _isOpen = true;
+        IsDisposed = false;
     }
 
     /// <inheritdoc />

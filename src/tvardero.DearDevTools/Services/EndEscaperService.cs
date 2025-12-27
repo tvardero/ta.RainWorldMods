@@ -5,7 +5,7 @@ namespace tvardero.DearDevTools.Services;
 
 public class EndEscaperService
 {
-    private ILogger _logger;
+    private readonly ILogger _logger;
 
     public EndEscaperService(ILogger<EndEscaperService> logger)
     {

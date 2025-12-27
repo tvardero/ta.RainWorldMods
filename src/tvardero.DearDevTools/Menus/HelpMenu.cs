@@ -7,6 +7,8 @@ public class HelpMenu : ImGuiWindowWithLeftPanelBase
     /// <inheritdoc />
     public HelpMenu() : base("Help") { }
 
+    public void NavigateTo(string docId) { }
+
     /// <inheritdoc />
     protected override void OnDrawLeftPanel() { }
 

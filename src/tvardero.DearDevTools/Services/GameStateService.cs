@@ -12,10 +12,10 @@ public class GameStateService : IDisposable
     public GameStateService(ILogger<GameStateService> logger)
     {
         _logger = logger;
-        
+
         On.ProcessManager.PostSwitchMainProcess += PostSwitchProcess;
         _logger.LogDebug("Registered On.ProcessManager.PostSwitchMainProcess hook");
-        
+
         RefreshValuesFromGame();
     }
 
@@ -32,14 +32,14 @@ public class GameStateService : IDisposable
     {
         On.ProcessManager.PostSwitchMainProcess -= PostSwitchProcess;
         _logger.LogDebug("Unregistered On.ProcessManager.PostSwitchMainProcess hook");
-        
+
         GC.SuppressFinalize(this);
     }
 
     public void RefreshValuesFromGame()
     {
         _logger.LogDebug("Refreshing game state values from game");
-        
+
         RainWorld? rw = Custom.rainWorld;
         CurrentProcess = rw.processManager.currentMainLoop;
 

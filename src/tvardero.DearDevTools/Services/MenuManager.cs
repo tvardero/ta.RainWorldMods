@@ -71,6 +71,27 @@ public class MenuManager
         return CreateNew_Impl<TDrawable>(stealFocus);
     }
 
+    public void HideAllOfType<TDrawable>()
+    where TDrawable : ImGuiDrawableBase
+    {
+        _logger.LogInformation("Hiding all drawables of type {DrawableType}", typeof(TDrawable));
+
+        _modImGuiContext.SanitizeRenderList();
+
+        foreach (TDrawable drawable in _modImGuiContext.RenderList.OfType<TDrawable>()) { drawable.Hide(); }
+    }
+
+    public void ShowAllOfType<TDrawable>(bool show = true)
+    where TDrawable : ImGuiDrawableBase
+    {
+        if (show) _logger.LogInformation("Showing all drawables of type {DrawableType}", typeof(TDrawable));
+        else _logger.LogInformation("Hiding all drawables of type {DrawableType}", typeof(TDrawable));
+
+        _modImGuiContext.SanitizeRenderList();
+
+        foreach (TDrawable drawable in _modImGuiContext.RenderList.OfType<TDrawable>()) { drawable.Show(show); }
+    }
+
     private TDrawable CreateNew_Impl<TDrawable>(bool stealFocus)
     where TDrawable : ImGuiDrawableBase
     {
@@ -89,26 +110,5 @@ public class MenuManager
         if (stealFocus && drawable is ImGuiWindowBase window) window.Focus();
 
         return drawable;
-    }
-
-    public void HideAllOfType<TDrawable>()
-    where TDrawable : ImGuiDrawableBase
-    {
-        _logger.LogInformation("Hiding all drawables of type {DrawableType}", typeof(TDrawable));
-
-        _modImGuiContext.SanitizeRenderList();
-
-        foreach (TDrawable drawable in _modImGuiContext.RenderList.OfType<TDrawable>()) { drawable.Hide(); }
-    }
-
-    public void ShowAllOfType<TDrawable>(bool show = true)
-    where TDrawable : ImGuiDrawableBase
-    {
-        if (show) { _logger.LogInformation("Showing all drawables of type {DrawableType}", typeof(TDrawable)); }
-        else { _logger.LogInformation("Hiding all drawables of type {DrawableType}", typeof(TDrawable)); }
-
-        _modImGuiContext.SanitizeRenderList();
-
-        foreach (TDrawable drawable in _modImGuiContext.RenderList.OfType<TDrawable>()) { drawable.Show(show); }
     }
 }
